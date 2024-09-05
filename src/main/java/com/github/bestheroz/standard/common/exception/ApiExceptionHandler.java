@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
@@ -29,28 +30,43 @@ public class ApiExceptionHandler {
   // 놓친 예외는 이곳에서 확인하여 추가해주면 된다.
   @ExceptionHandler({Throwable.class})
   public ResponseEntity<ApiResult<?>> exception(final Throwable e) {
-    log.warn(LogUtils.getStackTrace(e));
+    log.error(LogUtils.getStackTrace(e));
     return Result.error();
   }
 
-  @ExceptionHandler({BusinessException.class})
-  public ResponseEntity<ApiResult<?>> businessException(final BusinessException e) {
-    if (e.isEquals(ExceptionCode.FAIL_TRY_SIGN_IN_FIRST)) {
-      return Result.unauthenticated();
-    }
-    final String stacksOfProject = LogUtils.getStackTrace(e);
-    if (StringUtils.startsWith(e.getApiResult().getCode(), "E")) {
-      log.error(stacksOfProject);
-    } else {
-      log.info(stacksOfProject);
-    }
-    return Result.error(e);
+  @ExceptionHandler({RequestException400.class})
+  public ResponseEntity<ApiResult<?>> requestException400(final RequestException400 e) {
+    log.warn(LogUtils.getStackTrace(e));
+    return ResponseEntity.badRequest().body(ApiResult.of(e.getExceptionCode(), e.getData()));
+  }
+
+  @ExceptionHandler({AuthenticationException401.class})
+  public ResponseEntity<ApiResult<?>> authenticationException401(
+      final AuthenticationException401 e) {
+    log.warn(LogUtils.getStackTrace(e));
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body(ApiResult.of(e.getExceptionCode(), e.getData()));
+  }
+
+  @ExceptionHandler({AuthorityException403.class})
+  public ResponseEntity<ApiResult<?>> authorityException403(final AuthorityException403 e) {
+    log.warn(LogUtils.getStackTrace(e));
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .body(ApiResult.of(e.getExceptionCode(), e.getData()));
+  }
+
+  @ExceptionHandler({SystemException500.class})
+  public ResponseEntity<ApiResult<?>> systemException500(final SystemException500 e) {
+    log.warn(LogUtils.getStackTrace(e));
+    return ResponseEntity.internalServerError()
+        .body(ApiResult.of(e.getExceptionCode(), e.getData()));
   }
 
   @ExceptionHandler({IllegalArgumentException.class})
   public ResponseEntity<ApiResult<?>> illegalArgumentException(final IllegalArgumentException e) {
     log.warn(LogUtils.getStackTrace(e));
-    return Result.error(ExceptionCode.FAIL_INVALID_PARAMETER);
+    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+        .body(ApiResult.of(ExceptionCode.INVALID_PARAMETER));
   }
 
   @ExceptionHandler({UsernameNotFoundException.class})
@@ -65,7 +81,7 @@ public class ApiExceptionHandler {
   })
   public ResponseEntity<ApiResult<?>> bindException(final Throwable e) {
     log.warn(LogUtils.getStackTrace(e));
-    return Result.error(ExceptionCode.FAIL_INVALID_PARAMETER);
+    return ResponseEntity.badRequest().build();
   }
 
   @ExceptionHandler({
@@ -81,12 +97,12 @@ public class ApiExceptionHandler {
       return Result.unauthenticated();
     }
     log.warn(LogUtils.getStackTrace(e));
-    return Result.error(ExceptionCode.FAIL_INVALID_REQUEST);
+    return ResponseEntity.badRequest().build();
   }
 
   @ExceptionHandler({DuplicateKeyException.class})
   public ResponseEntity<ApiResult<?>> duplicateKeyException(final DuplicateKeyException e) {
     log.warn(LogUtils.getStackTrace(e));
-    return Result.error(ExceptionCode.FAIL_UNIQUE_CONSTRAINT_VIOLATED);
+    return ResponseEntity.badRequest().build();
   }
 }

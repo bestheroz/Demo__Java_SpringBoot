@@ -19,6 +19,7 @@ public class IdCreated {
 
   private Instant createdAt;
 
+  @Column(name = "created_object_type")
   private UserTypeEnum createdObjectType;
 
   @ManyToOne(fetch = FetchType.LAZY)

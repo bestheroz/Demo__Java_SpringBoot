@@ -13,7 +13,7 @@ import org.hibernate.annotations.JoinFormula;
 @Setter
 @MappedSuperclass
 public class IdCreatedUpdated extends IdCreated {
-  @Column(name = "updated_object_type", columnDefinition = "VARCHAR(255)")
+  @Column(name = "updated_object_type", columnDefinition = "VARCHAR(10)")
   private UserTypeEnum updatedObjectType;
 
   private Instant updatedAt;

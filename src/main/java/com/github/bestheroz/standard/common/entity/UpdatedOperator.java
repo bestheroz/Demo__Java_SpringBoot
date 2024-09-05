@@ -8,7 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @DiscriminatorColumn(name = "updated_object_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class UpdatedOperator {
   @Id private Long id;

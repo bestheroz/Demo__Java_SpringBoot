@@ -1,0 +1,127 @@
+spring:
+  profiles:
+    active: local
+  servlet:
+    multipart:
+      enabled: false
+  web:
+    resources:
+      chain:
+        compressed: true
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        default_batch_fetch_size: 1000
+    open-in-view: false
+  datasource:
+    driver-class-name: com.amazonaws.secretsmanager.sql.AWSSecretsManagerMySQLDriver
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+server:
+  port: 8000
+  compression:
+    enabled: true
+  http2:
+    enabled: true
+  servlet:
+    session:
+      cookie:
+        name: JSESSIONID_DEMO
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+decorator:
+  datasource:
+    p6spy:
+      logging: slf4j
+      multiline: true
+springdoc:
+  api-docs:
+    enabled: false
+sentry:
+  dsn:
+  traces-sample-rate: 0
+cloud:
+  aws:
+    stack:
+      auto: false
+jwt:
+  secret: JOONY.KIM!!demo-api%%jwt^^secret
+  access-token-expiration-minutes: 5
+  refresh-token-expiration-minutes: 30
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:mysql://database-1.cdomw0u4mc2w.ap-northeast-2.rds.amazonaws.com:3306/demo?useSSL=false&serverTimezone=UTC
+    username: demo
+    password: demo!%$@
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 2
+server:
+  port: 8080
+sentry:
+  logging:
+    enabled: false
+environment:
+  app:
+    test: test
+jwt:
+  access-token-expiration-minutes: 1440
+---
+spring:
+  config:
+    activate:
+      on-profile: sandbox
+  datasource:
+    url:
+    username:
+    password:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+springdoc:
+  api-docs:
+    enabled: true
+  paths-to-match:
+    - /api/v1/**
+sentry:
+  environment: sandbox
+jwt:
+  access-token-expiration-minutes: 1440
+---
+spring:
+  config:
+    activate:
+      on-profile: qa
+  datasource:
+    url:
+    username:
+    password:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+sentry:
+  environment: qa
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url:
+    username:
+    password:
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 10
+sentry:
+  environment: prod

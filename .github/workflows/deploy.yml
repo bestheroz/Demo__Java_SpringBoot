@@ -1,0 +1,44 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ ignore ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        java-version: [ 17 ]
+
+    steps:
+      - uses: actions/checkout@main
+      - uses: gradle/wrapper-validation-action@v1
+
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@main
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@main
+        with:
+          gradle-version: wrapper
+          arguments: |
+            build
+            --no-daemon
+            --exclude-task test
+            -Dspring.profiles.active=dev
+
+      - uses: 8398a7/action-slack@v3
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        with:
+          status: ${{ job.status }}
+          fields: repo,workflow,message,author,took,ref
+          author_name: ''
+        if: always()

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @ControllerAdvice
@@ -32,6 +33,12 @@ public class ApiExceptionHandler {
   public ResponseEntity<ApiResult<?>> exception(final Throwable e) {
     log.error(LogUtils.getStackTrace(e));
     return Result.error();
+  }
+
+  @ExceptionHandler({NoResourceFoundException.class})
+  public ResponseEntity<ApiResult<?>> noResourceFoundException(final NoResourceFoundException e) {
+    log.error(LogUtils.getStackTrace(e));
+    return ResponseEntity.notFound().build();
   }
 
   @ExceptionHandler({RequestException400.class})

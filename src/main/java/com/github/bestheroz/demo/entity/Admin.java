@@ -6,6 +6,7 @@ import com.github.bestheroz.standard.common.enums.AuthorityEnum;
 import com.github.bestheroz.standard.common.enums.UserTypeEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import java.time.Instant;
 import java.util.List;
@@ -19,6 +20,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DiscriminatorValue("admin")
 public class Admin extends IdCreatedUpdated {
   @Column(nullable = false)
   private String loginId;

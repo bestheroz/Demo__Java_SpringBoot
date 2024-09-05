@@ -13,7 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
-public class CommonUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails {
   private final Long id;
   private final String loginId;
   private final String name;
@@ -21,7 +21,7 @@ public class CommonUserDetails implements UserDetails {
   private final Boolean managerFlag;
   private final List<AuthorityEnum> authorities;
 
-  public CommonUserDetails(Admin admin) {
+  public CustomUserDetails(Admin admin) {
     this.id = admin.getId();
     this.loginId = admin.getLoginId();
     this.name = admin.getName();
@@ -30,7 +30,7 @@ public class CommonUserDetails implements UserDetails {
     this.authorities = admin.getAuthorities();
   }
 
-  public CommonUserDetails(User user) {
+  public CustomUserDetails(User user) {
     this.id = user.getId();
     this.loginId = user.getLoginId();
     this.name = user.getName();
@@ -39,7 +39,7 @@ public class CommonUserDetails implements UserDetails {
     this.authorities = user.getAuthorities();
   }
 
-  public CommonUserDetails(
+  public CustomUserDetails(
       Long id,
       String loginId,
       String name,

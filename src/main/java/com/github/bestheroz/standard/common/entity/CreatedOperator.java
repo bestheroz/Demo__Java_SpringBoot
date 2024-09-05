@@ -9,9 +9,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "created_obect__type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "created_object_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class CreatedOperator {
   @Id private Long id;
   private UserTypeEnum type;
   private Boolean managerFlag;
+  private String loginId;
+  private String name;
 }

@@ -1,11 +1,8 @@
 package com.github.bestheroz.demo.repository;
 
 import com.github.bestheroz.demo.entity.User;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-  Optional<User> findByLoginId(String loginId);
-}
+public interface UserRepository extends JpaRepository<User, Long> {}

@@ -39,9 +39,6 @@ decorator:
     p6spy:
       logging: slf4j
       multiline: true
-springdoc:
-  api-docs:
-    enabled: false
 sentry:
   dsn:
   traces-sample-rate: 0
@@ -88,11 +85,6 @@ spring:
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
-springdoc:
-  api-docs:
-    enabled: true
-  paths-to-match:
-    - /api/v1/**
 sentry:
   environment: sandbox
 jwt:
@@ -123,5 +115,8 @@ spring:
     hikari:
       maximum-pool-size: 30
       minimum-idle: 10
+springdoc:
+  api-docs:
+    enabled: false
 sentry:
   environment: prod

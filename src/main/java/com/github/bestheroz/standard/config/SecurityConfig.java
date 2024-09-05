@@ -6,13 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,12 +27,19 @@ public class SecurityConfig {
   private final JwtTokenProvider jwtTokenProvider;
   public static final String[] PUBLIC =
       new String[] {
-        "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**",
+        "/swagger-ui.html",
+        "/swagger-ui/**",
+        "/v3/api-docs/**",
+        "/webjars/**",
+        "/favicon.ico",
+        "/api/v1/health/readiness",
+        "/api/v1/health/liveness",
+        "/api/v1/notices",
       };
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService, PUBLIC);
+    return new JwtAuthenticationFilter(jwtTokenProvider);
   }
 
   @Bean
@@ -72,13 +77,5 @@ public class SecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
-  }
-
-  private final UserDetailsService adminDetailsService;
-  private final UserDetailsService userDetailsService;
-
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(adminDetailsService).passwordEncoder(passwordEncoder());
-    auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
   }
 }

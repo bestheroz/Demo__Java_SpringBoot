@@ -18,13 +18,13 @@ public class IdCreated {
   private Long id;
 
   private Instant createdAt;
+
   private UserTypeEnum createdObjectType;
-  private Long createdObjectId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "created_by_id", referencedColumnName = "id")
+  @JoinColumn(name = "created_object_id", referencedColumnName = "id")
   @Any
   @JoinColumnOrFormula(column = @JoinColumn(name = "created_object_id"))
   @JoinColumnOrFormula(formula = @JoinFormula(value = "created_object_type"))
-  private Operator createdBy;
+  private CreatedOperator createdBy;
 }

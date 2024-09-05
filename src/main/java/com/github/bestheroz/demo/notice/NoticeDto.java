@@ -2,7 +2,6 @@ package com.github.bestheroz.demo.notice;
 
 import com.github.bestheroz.demo.entity.Notice;
 import com.github.bestheroz.standard.common.dto.IdCreatedUpdatedDto;
-import com.github.bestheroz.standard.common.dto.UserSimpleDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,9 +35,9 @@ public class NoticeDto {
       response.setContent(notice.getContent());
       response.setUseFlag(notice.getUseFlag());
       response.setCreatedAt(notice.getCreatedAt());
-      response.setCreatedBy(UserSimpleDto.fromEntity(notice.getCreatedBy()));
+      response.setCreatedBy(notice.getCreatedBy());
       response.setUpdatedAt(notice.getUpdatedAt());
-      response.setUpdatedBy(UserSimpleDto.fromEntity(notice.getUpdatedBy()));
+      response.setUpdatedBy(notice.getUpdatedBy());
       return response;
     }
   }

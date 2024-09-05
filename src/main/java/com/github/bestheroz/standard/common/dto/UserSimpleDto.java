@@ -1,7 +1,7 @@
 package com.github.bestheroz.standard.common.dto;
 
-import com.github.bestheroz.standard.common.entity.CreatedOperator;
-import com.github.bestheroz.standard.common.entity.UpdatedOperator;
+import com.github.bestheroz.demo.entity.Admin;
+import com.github.bestheroz.demo.entity.User;
 import com.github.bestheroz.standard.common.enums.UserTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -22,12 +22,12 @@ public class UserSimpleDto {
   @Schema(description = "관리자 이름 or 유저 이름")
   private String name;
 
-  public static UserSimpleDto fromEntity(UpdatedOperator entity) {
+  public static UserSimpleDto fromEntity(Admin entity) {
     return new UserSimpleDto(
         entity.getId(), entity.getType(), entity.getLoginId(), entity.getName());
   }
 
-  public static UserSimpleDto fromEntity(CreatedOperator entity) {
+  public static UserSimpleDto fromEntity(User entity) {
     return new UserSimpleDto(
         entity.getId(), entity.getType(), entity.getLoginId(), entity.getName());
   }

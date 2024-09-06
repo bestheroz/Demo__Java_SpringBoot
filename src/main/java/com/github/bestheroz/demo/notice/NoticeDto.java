@@ -3,11 +3,13 @@ package com.github.bestheroz.demo.notice;
 import com.github.bestheroz.demo.entity.Notice;
 import com.github.bestheroz.standard.common.dto.IdCreatedUpdatedDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 public class NoticeDto {
   @Data
+  @AllArgsConstructor
   public static class Request {
     @Schema(description = "페이지 번호", example = "1")
     private Integer page;

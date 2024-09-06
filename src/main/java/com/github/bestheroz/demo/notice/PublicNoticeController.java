@@ -1,12 +1,10 @@
 package com.github.bestheroz.demo.notice;
 
 import com.github.bestheroz.standard.common.dto.ListResult;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("public/api/v1/notices")
@@ -16,8 +14,10 @@ public class PublicNoticeController {
   private final NoticeService noticeService;
 
   @GetMapping
-  public ListResult<NoticeDto.Response> getNotices(NoticeDto.Request request) {
-    return noticeService.getNotices(request);
+  public ListResult<NoticeDto.Response> getNotices(
+      @Schema(example = "1") @RequestParam Integer page,
+      @Schema(example = "10") @RequestParam Integer pageSize) {
+    return noticeService.getNotices(new NoticeDto.Request(page, pageSize));
   }
 
   @GetMapping("{id}")

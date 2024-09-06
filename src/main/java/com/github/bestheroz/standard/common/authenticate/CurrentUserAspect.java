@@ -22,7 +22,6 @@ public class CurrentUserAspect {
       "execution(* com.github.bestheroz..*(.., @com.github.bestheroz.standard.common.authenticate.CurrentUser (*), ..))")
   public Object checkCurrentUser(ProceedingJoinPoint joinPoint) throws Throwable {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    System.out.println("authentication = " + authentication);
     if (authentication == null || !authentication.isAuthenticated()) {
       throw new AuthenticationException("Authentication is required") {};
     }

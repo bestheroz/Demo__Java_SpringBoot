@@ -20,6 +20,10 @@ spring:
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
 server:
   port: 8000
   compression:
@@ -42,10 +46,6 @@ decorator:
 sentry:
   dsn:
   traces-sample-rate: 0
-cloud:
-  aws:
-    stack:
-      auto: false
 jwt:
   secret: JOONY.KIM!!demo-api%%jwt^^secret
   access-token-expiration-minutes: 5

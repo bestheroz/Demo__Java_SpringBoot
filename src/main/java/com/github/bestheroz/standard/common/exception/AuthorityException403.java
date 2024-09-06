@@ -12,6 +12,11 @@ public class AuthorityException403 extends RuntimeException {
     this.data = null;
   }
 
+  public AuthorityException403(final ExceptionCode code) {
+    this.exceptionCode = code;
+    this.data = null;
+  }
+
   public AuthorityException403(final Object data) {
     this.exceptionCode = ExceptionCode.INVALID_PARAMETER;
     this.data = data;

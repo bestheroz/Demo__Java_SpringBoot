@@ -35,6 +35,7 @@ public class SecurityConfig {
         "/api/v1/health/readiness",
         "/api/v1/health/liveness",
         "/api/v1/notices",
+        "/api/v1/notices/*",
       };
 
   @Bean

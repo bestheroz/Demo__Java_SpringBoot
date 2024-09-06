@@ -12,6 +12,11 @@ public class RequestException400 extends RuntimeException {
     this.data = null;
   }
 
+  public RequestException400(final ExceptionCode code) {
+    this.exceptionCode = code;
+    this.data = null;
+  }
+
   public RequestException400(final Object data) {
     this.exceptionCode = ExceptionCode.INVALID_PARAMETER;
     this.data = data;

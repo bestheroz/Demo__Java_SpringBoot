@@ -1,8 +1,9 @@
 package com.github.bestheroz.demo.notice;
 
+import com.github.bestheroz.standard.common.dto.ListResult;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +14,12 @@ public class NoticeController {
   private final NoticeService noticeService;
 
   @GetMapping
-  public Page<NoticeDto.Response> getNotice(NoticeDto.Request request) {
-    return noticeService.getNotice(request);
+  public ListResult<NoticeDto.Response> getNotices(NoticeDto.Request request) {
+    return noticeService.getNotices(request);
+  }
+
+  @GetMapping("{id}")
+  public NoticeDto.Response getNotices(@PathVariable Long id) {
+    return noticeService.getNotice(id);
   }
 }

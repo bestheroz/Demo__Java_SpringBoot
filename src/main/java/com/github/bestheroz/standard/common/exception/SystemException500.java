@@ -12,6 +12,11 @@ public class SystemException500 extends RuntimeException {
     this.data = null;
   }
 
+  public SystemException500(final ExceptionCode code) {
+    this.exceptionCode = code;
+    this.data = null;
+  }
+
   public SystemException500(final Object data) {
     this.exceptionCode = ExceptionCode.INVALID_PARAMETER;
     this.data = data;

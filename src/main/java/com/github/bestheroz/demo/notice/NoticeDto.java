@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 public class NoticeDto {
   @Data
   public static class Request {
-    @Schema(description = "페이지 번호", example = "0")
+    @Schema(description = "페이지 번호", example = "1")
     private Integer page;
 
     @Schema(description = "페이지 크기", example = "10")

@@ -4,7 +4,7 @@ plugins {
     id "idea"
     id "com.diffplug.spotless" version "7.0.0.BETA2"
     id "com.github.ben-manes.versions" version "0.51.0"
-    id 'io.spring.dependency-management' version "1.1.6"
+    id "io.spring.dependency-management" version "1.1.6"
 }
 
 group = "com.github.bestheroz"
@@ -22,34 +22,35 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.boot:spring-boot-configuration-processor"
+    implementation "org.aspectj:aspectjweaver"
     implementation "org.apache.commons:commons-lang3"
-    implementation 'com.mysql:mysql-connector-j:9.0.0'
+    implementation "com.mysql:mysql-connector-j:9.0.0"
     implementation "software.aws.rds:aws-mysql-jdbc:1.1.15"
     implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.2"
     implementation "com.auth0:java-jwt:4.4.0"
-    implementation 'io.sentry:sentry-spring-boot-starter-jakarta:7.14.0'
+    implementation "io.sentry:sentry-spring-boot-starter-jakarta:7.14.0"
     implementation "io.sentry:sentry-logback:7.14.0"
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0"
     implementation "io.awspring.cloud:spring-cloud-starter-aws:2.4.4"
     implementation "io.awspring.cloud:spring-cloud-aws-autoconfigure:2.4.4"
     implementation "com.amazonaws.secretsmanager:aws-secretsmanager-jdbc:2.0.2"
-    implementation 'org.fusesource.jansi:jansi:2.4.1'
+    implementation "org.fusesource.jansi:jansi:2.4.1"
     testAnnotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 test {
-    exclude '**/*'
+    exclude "**/*"
 }
 
 tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+    options.encoding = "UTF-8"
 }
 
 bootJar {
-    archiveFileName = 'demo.jar'
+    archiveFileName = "demo.jar"
 }
 
 spotless {

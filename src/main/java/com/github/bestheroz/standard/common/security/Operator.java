@@ -7,13 +7,15 @@ import com.github.bestheroz.standard.common.enums.UserTypeEnum;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
-public class CustomUserDetails implements UserDetails {
+@EqualsAndHashCode(of = "id")
+public class Operator implements UserDetails {
   private final Long id;
   private final String loginId;
   private final String name;
@@ -21,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
   private final Boolean managerFlag;
   private final List<AuthorityEnum> authorities;
 
-  public CustomUserDetails(Admin admin) {
+  public Operator(Admin admin) {
     this.id = admin.getId();
     this.loginId = admin.getLoginId();
     this.name = admin.getName();
@@ -30,7 +32,7 @@ public class CustomUserDetails implements UserDetails {
     this.authorities = admin.getAuthorities();
   }
 
-  public CustomUserDetails(User user) {
+  public Operator(User user) {
     this.id = user.getId();
     this.loginId = user.getLoginId();
     this.name = user.getName();
@@ -39,7 +41,7 @@ public class CustomUserDetails implements UserDetails {
     this.authorities = user.getAuthorities();
   }
 
-  public CustomUserDetails(
+  public Operator(
       Long id,
       String loginId,
       String name,

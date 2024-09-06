@@ -8,13 +8,9 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Configuration
-@EnableAspectJAutoProxy
 @Aspect
 @Component
 @RequiredArgsConstructor

@@ -4,6 +4,7 @@ import com.github.bestheroz.demo.repository.NoticeRepository;
 import com.github.bestheroz.standard.common.dto.ListResult;
 import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.exception.RequestException400;
+import com.github.bestheroz.standard.common.security.Operator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,5 +30,27 @@ public class NoticeService {
         .findById(id)
         .map(NoticeDto.Response::fromEntity)
         .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_NOTICE));
+  }
+
+  public NoticeDto.Response createNotice(NoticeCreateDto.Request request, Operator operator) {
+    return NoticeDto.Response.fromEntity(noticeRepository.save(request.toEntity(operator)));
+  }
+
+  public NoticeDto.Response updateNotice(
+      Long id, NoticeCreateDto.Request request, Operator operator) {
+    return NoticeDto.Response.fromEntity(
+        noticeRepository
+            .findById(id)
+            .map(
+                notice -> {
+                  notice.update(
+                      request.getTitle(), request.getContent(), request.getUseFlag(), operator);
+                  return notice;
+                })
+            .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_NOTICE)));
+  }
+
+  public void deleteNotice(Long id) {
+    noticeRepository.deleteById(id);
   }
 }

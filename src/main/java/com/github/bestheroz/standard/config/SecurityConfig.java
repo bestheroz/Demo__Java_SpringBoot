@@ -32,10 +32,7 @@ public class SecurityConfig {
         "/v3/api-docs/**",
         "/webjars/**",
         "/favicon.ico",
-        "/api/v1/health/readiness",
-        "/api/v1/health/liveness",
-        "/api/v1/notices",
-        "/api/v1/notices/*",
+        "/public/api/**",
       };
 
   @Bean

@@ -7,7 +7,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.bestheroz.standard.common.enums.AuthorityEnum;
 import com.github.bestheroz.standard.common.enums.UserTypeEnum;
-import com.github.bestheroz.standard.common.security.CustomUserDetails;
+import com.github.bestheroz.standard.common.security.Operator;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.Date;
@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -36,44 +37,43 @@ public class JwtTokenProvider {
     this.refreshTokenExpirationMinutes = refreshTokenExpirationMinutes;
   }
 
-  public String createAccessToken(CustomUserDetails customCustomUserDetails) {
-    Assert.notNull(customCustomUserDetails, "customUserDetails must not be null");
+  public String createAccessToken(Operator customOperator) {
+    Assert.notNull(customOperator, "customUserDetails must not be null");
     return JWT.create()
-        .withClaim("id", customCustomUserDetails.getId())
-        .withClaim("loginId", customCustomUserDetails.getLoginId())
-        .withClaim("name", customCustomUserDetails.getName())
-        .withClaim("type", customCustomUserDetails.getType().name())
-        .withClaim("managerFlag", customCustomUserDetails.getManagerFlag())
+        .withClaim("id", customOperator.getId())
+        .withClaim("loginId", customOperator.getLoginId())
+        .withClaim("name", customOperator.getName())
+        .withClaim("type", customOperator.getType().name())
+        .withClaim("managerFlag", customOperator.getManagerFlag())
         .withArrayClaim(
             "authorities",
-            customCustomUserDetails.getAuthorities().stream()
+            customOperator.getAuthorities().stream()
                 .map(GrantedAuthority::toString)
                 .toArray(String[]::new))
         .withExpiresAt(Date.from(Instant.now().plusSeconds(accessTokenExpirationMinutes * 60)))
         .sign(algorithm);
   }
 
-  public String createRefreshToken(CustomUserDetails customCustomUserDetails) {
-    Assert.notNull(customCustomUserDetails, "customUserDetails must not be null");
+  public String createRefreshToken(Operator customOperator) {
+    Assert.notNull(customOperator, "customUserDetails must not be null");
     return JWT.create()
-        .withClaim("id", customCustomUserDetails.getId())
+        .withClaim("id", customOperator.getId())
         .withExpiresAt(Date.from(Instant.now().plusSeconds(refreshTokenExpirationMinutes * 60)))
         .sign(algorithm);
   }
 
   public Authentication getAuthentication(String token) {
-    CustomUserDetails customUserDetails = getCustomUserDetails(token);
     return new UsernamePasswordAuthenticationToken(
-        customUserDetails, "", customUserDetails.getAuthorities());
+        getOperator(token), "", getOperator(token).getAuthorities());
   }
 
   public Long getId(String token) {
     return getClaim(token, "id").asLong();
   }
 
-  public CustomUserDetails getCustomUserDetails(String token) {
+  public UserDetails getOperator(String token) {
     DecodedJWT jwt = verifyToken(token);
-    return new CustomUserDetails(
+    return new Operator(
         jwt.getClaim("id").asLong(),
         jwt.getClaim("loginId").asString(),
         jwt.getClaim("name").asString(),

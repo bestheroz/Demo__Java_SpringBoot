@@ -2,7 +2,6 @@ package com.github.bestheroz.standard.common.authenticate;
 
 import static com.github.bestheroz.standard.config.SecurityConfig.PUBLIC;
 
-import com.github.bestheroz.standard.common.security.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,9 +10,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -47,8 +49,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       return;
     }
 
-    if (!requestURI.startsWith("/api/v1/health/")) {
-      log.info(REQUEST_PARAMETERS, request.getMethod(), requestURI, request.getQueryString());
+    if (!requestURI.startsWith("/public/api/v1/health/")) {
+      log.info(
+          REQUEST_PARAMETERS,
+          request.getMethod(),
+          requestURI,
+          StringUtils.defaultString(request.getQueryString()));
     }
 
     StopWatch stopWatch = new StopWatch();
@@ -73,15 +79,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return;
       }
 
-      CustomUserDetails userDetails = jwtTokenProvider.getCustomUserDetails(token);
-      UsernamePasswordAuthenticationToken authentication =
+      UserDetails userDetails = jwtTokenProvider.getOperator(token);
+      Authentication authentication =
           new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
       SecurityContextHolder.getContext().setAuthentication(authentication);
 
       filterChain.doFilter(request, response);
     } finally {
       stopWatch.stop();
-      if (!requestURI.startsWith("/api/v1/health/")) {
+      if (!requestURI.startsWith("/public/api/v1/health/")) {
         log.info(REQUEST_COMPLETE_EXECUTE_TIME, requestURI, stopWatch);
       }
     }

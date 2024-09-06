@@ -8,13 +8,13 @@ import lombok.Data;
 public class NoticeCreateDto {
   @Data
   public static class Request {
-    @Schema(description = "제목")
+    @Schema(description = "제목", requiredMode = Schema.RequiredMode.REQUIRED)
     private String title;
 
-    @Schema(description = "내용")
+    @Schema(description = "내용", requiredMode = Schema.RequiredMode.REQUIRED)
     private String content;
 
-    @Schema(description = "사용 여부")
+    @Schema(description = "사용 여부", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean useFlag;
 
     public Notice toEntity(Operator operator) {

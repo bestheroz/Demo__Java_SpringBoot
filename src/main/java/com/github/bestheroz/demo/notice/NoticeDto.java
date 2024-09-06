@@ -11,23 +11,23 @@ public class NoticeDto {
   @Data
   @AllArgsConstructor
   public static class Request {
-    @Schema(description = "페이지 번호", example = "1")
+    @Schema(description = "페이지 번호", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer page;
 
-    @Schema(description = "페이지 크기", example = "10")
+    @Schema(description = "페이지 크기", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer pageSize;
   }
 
   @Data
   @EqualsAndHashCode(callSuper = true)
   public static class Response extends IdCreatedUpdatedDto {
-    @Schema(description = "제목")
+    @Schema(description = "제목", requiredMode = Schema.RequiredMode.REQUIRED)
     private String title;
 
-    @Schema(description = "내용")
+    @Schema(description = "내용", requiredMode = Schema.RequiredMode.REQUIRED)
     private String content;
 
-    @Schema(description = "사용 여부")
+    @Schema(description = "사용 여부", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean useFlag;
 
     public static Response fromEntity(Notice notice) {

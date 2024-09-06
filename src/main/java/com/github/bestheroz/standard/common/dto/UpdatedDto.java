@@ -6,9 +6,9 @@ import lombok.Data;
 
 @Data
 public class UpdatedDto {
-  @Schema(description = "수정일시")
+  @Schema(description = "수정일시", requiredMode = Schema.RequiredMode.REQUIRED)
   private Instant updatedAt;
 
-  @Schema(description = "수정자")
+  @Schema(description = "수정자", requiredMode = Schema.RequiredMode.REQUIRED)
   private UserSimpleDto updatedBy;
 }

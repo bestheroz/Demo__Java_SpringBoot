@@ -7,6 +7,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class IdCreatedUpdatedDto extends CreatedUpdatedDto {
-  @Schema(description = "ID(KEY)")
+  @Schema(description = "ID(KEY)", requiredMode = Schema.RequiredMode.REQUIRED)
   private Long id;
 }

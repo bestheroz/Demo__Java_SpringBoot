@@ -6,9 +6,9 @@ import lombok.Data;
 
 @Data
 public class CreatedDto {
-  @Schema(description = "생성일시")
+  @Schema(description = "생성일시", requiredMode = Schema.RequiredMode.REQUIRED)
   private Instant createdAt;
 
-  @Schema(description = "생성자")
+  @Schema(description = "생성자", requiredMode = Schema.RequiredMode.REQUIRED)
   private UserSimpleDto createdBy;
 }

@@ -10,16 +10,16 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UserSimpleDto {
-  @Schema(description = "ID(KEY)")
+  @Schema(description = "ID(KEY)", requiredMode = Schema.RequiredMode.REQUIRED)
   private Long id;
 
-  @Schema(description = "관리자 or 유저")
+  @Schema(description = "관리자 or 유저", requiredMode = Schema.RequiredMode.REQUIRED)
   private UserTypeEnum type;
 
-  @Schema(description = "관리자 ID or 유저 계정 ID")
+  @Schema(description = "관리자 ID or 유저 계정 ID", requiredMode = Schema.RequiredMode.REQUIRED)
   private String loginId;
 
-  @Schema(description = "관리자 이름 or 유저 이름")
+  @Schema(description = "관리자 이름 or 유저 이름", requiredMode = Schema.RequiredMode.REQUIRED)
   private String name;
 
   public static UserSimpleDto fromEntity(Admin entity) {

@@ -14,14 +14,14 @@ public class PublicNoticeController {
   private final NoticeService noticeService;
 
   @GetMapping
-  public ListResult<NoticeDto.Response> getNotices(
+  public ListResult<NoticeDto.Response> getNoticeList(
       @Schema(example = "1") @RequestParam Integer page,
       @Schema(example = "10") @RequestParam Integer pageSize) {
-    return noticeService.getNotices(new NoticeDto.Request(page, pageSize));
+    return noticeService.getNoticeList(new NoticeDto.Request(page, pageSize));
   }
 
   @GetMapping("{id}")
-  public NoticeDto.Response getNotices(@PathVariable Long id) {
+  public NoticeDto.Response getNotice(@PathVariable Long id) {
     return noticeService.getNotice(id);
   }
 }

@@ -7,6 +7,7 @@ import com.github.bestheroz.standard.common.exception.RequestException400;
 import com.github.bestheroz.standard.common.security.Operator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +18,12 @@ public class NoticeService {
   private final NoticeRepository noticeRepository;
 
   @Transactional(readOnly = true)
-  public ListResult<NoticeDto.Response> getNotices(NoticeDto.Request request) {
+  public ListResult<NoticeDto.Response> getNoticeList(NoticeDto.Request request) {
     return ListResult.of(
         noticeRepository
-            .findAll(PageRequest.of(request.getPage(), request.getPageSize()))
+            .findAll(
+                PageRequest.of(
+                    request.getPage(), request.getPageSize(), Sort.by("id").descending()))
             .map(NoticeDto.Response::fromEntity));
   }
 
@@ -50,7 +53,10 @@ public class NoticeService {
             .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_NOTICE)));
   }
 
-  public void deleteNotice(Long id) {
-    noticeRepository.deleteById(id);
+  public void deleteNotice(Long id, Operator operator) {
+    noticeRepository
+        .findById(id)
+        .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_NOTICE))
+        .remove(operator);
   }
 }

@@ -25,7 +25,6 @@ dependencies {
     implementation "org.aspectj:aspectjweaver"
     implementation "org.apache.commons:commons-lang3"
     implementation "com.mysql:mysql-connector-j:9.0.0"
-    implementation "software.aws.rds:aws-mysql-jdbc:1.1.15"
     implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.2"
     implementation "com.auth0:java-jwt:4.4.0"
     implementation "io.sentry:sentry-spring-boot-starter-jakarta:8.0.0-alpha.4"

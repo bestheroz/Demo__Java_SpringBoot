@@ -92,7 +92,7 @@ public class JwtTokenProvider {
     return null;
   }
 
-  public boolean validateAccessToken(String token) {
+  public boolean validateToken(String token) {
     try {
       verifyToken(token);
       return true;

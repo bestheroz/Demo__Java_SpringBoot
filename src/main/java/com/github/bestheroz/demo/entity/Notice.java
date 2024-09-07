@@ -31,7 +31,6 @@ public class Notice extends IdCreatedUpdated {
     this.content = content;
     this.useFlag = useFlag;
     this.removedFlag = false;
-    this.removedAt = null;
     Instant now = Instant.now();
     this.setCreatedAt(now);
     this.setCreatedObjectId(operator.getId());
@@ -46,6 +45,15 @@ public class Notice extends IdCreatedUpdated {
     this.content = content;
     this.useFlag = useFlag;
     this.setUpdatedAt(Instant.now());
+    this.setUpdatedObjectId(operator.getId());
+    this.setUpdatedObjectType(operator.getType());
+  }
+
+  public void remove(Operator operator) {
+    this.removedFlag = true;
+    Instant now = Instant.now();
+    this.removedAt = now;
+    this.setUpdatedAt(now);
     this.setUpdatedObjectId(operator.getId());
     this.setUpdatedObjectType(operator.getType());
   }

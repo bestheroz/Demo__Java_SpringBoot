@@ -3,6 +3,8 @@ package com.github.bestheroz.demo.notice;
 import com.github.bestheroz.standard.common.authenticate.Authenticated;
 import com.github.bestheroz.standard.common.authenticate.CurrentUser;
 import com.github.bestheroz.standard.common.security.Operator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,9 +34,12 @@ public class NoticeController {
   }
 
   @DeleteMapping("{id}")
+  @Operation(
+      description = "(Soft delete)",
+      responses = {@ApiResponse(responseCode = "204")})
   @Authenticated
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteNotice(@PathVariable Long id) {
-    noticeService.deleteNotice(id);
+  public void deleteNotice(@PathVariable Long id, @CurrentUser Operator operator) {
+    noticeService.deleteNotice(id, operator);
   }
 }

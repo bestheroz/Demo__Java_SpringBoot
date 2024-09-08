@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/users")
 @RequiredArgsConstructor
-@Tag(name = "User", description = "관리자 API")
+@Tag(name = "User", description = "유저 API")
 public class UserController {
   private final UserService userService;
 
@@ -34,12 +34,12 @@ public class UserController {
   @Operation(summary = "로그인 아이디 중복 확인")
   public boolean checkLoginId(
       @Schema(description = "로그인 아이디") @RequestParam String loginId,
-      @Schema(description = "관리자 ID") @RequestParam(required = false) Long id) {
+      @Schema(description = "유저 ID") @RequestParam(required = false) Long id) {
     return userService.checkLoginId(loginId, id);
   }
 
   @PostMapping("login")
-  @Operation(summary = "관리자 로그인")
+  @Operation(summary = "유저 로그인")
   public TokenDto loginUser(@RequestBody UserLoginDto.Request request) {
     return userService.loginUser(request);
   }
@@ -53,7 +53,7 @@ public class UserController {
 
   @GetMapping("renew-token")
   @Operation(
-      summary = "관리자 토큰 갱신",
+      summary = "유저 토큰 갱신",
       description =
           "*어세스 토큰* 만료 시 *리플래시 토큰* 으로 *어세스 토큰* 을 갱신합니다.\n"
               + "    \"(동시에 여러 사용자가 접속하고 있다면 *리플래시 토큰* 값이 달라서 갱신이 안될 수 있습니다.)")
@@ -82,7 +82,7 @@ public class UserController {
   }
 
   @PatchMapping("{id}/password")
-  @Operation(summary = "관리자 비밀번호 변경")
+  @Operation(summary = "유저 비밀번호 변경")
   @SecurityRequirement(name = "bearerAuth")
   @PreAuthorize("hasAuthority('USER_EDIT')")
   public UserDto.Response changePassword(
@@ -94,7 +94,7 @@ public class UserController {
 
   @DeleteMapping("logout")
   @Operation(
-      summary = "관리자 로그아웃",
+      summary = "유저 로그아웃",
       description = "리플래시 토큰을 삭제합니다.",
       responses = {@ApiResponse(responseCode = "204")})
   @ResponseStatus(HttpStatus.NO_CONTENT)

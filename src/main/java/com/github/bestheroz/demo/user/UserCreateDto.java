@@ -16,7 +16,7 @@ public class UserCreateDto {
     @Schema(description = "비밀번호", requiredMode = Schema.RequiredMode.REQUIRED)
     private String password;
 
-    @Schema(description = "관리자 이름", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "유저 이름", requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
 
     @Schema(description = "사용 여부", requiredMode = Schema.RequiredMode.REQUIRED)

@@ -27,7 +27,7 @@ public class UserDto {
     @Schema(description = "로그인 아이디", requiredMode = Schema.RequiredMode.REQUIRED)
     private String loginId;
 
-    @Schema(description = "관리자 이름", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "유저 이름", requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
 
     @Schema(description = "사용 여부", requiredMode = Schema.RequiredMode.REQUIRED)

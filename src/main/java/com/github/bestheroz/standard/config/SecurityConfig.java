@@ -37,11 +37,13 @@ public class SecurityConfig {
         "/api/v1/notices",
         "/api/v1/notices/{id}",
         "/api/v1/admins/check-login-id",
-        "/api/v1/admins/renew-token"
+        "/api/v1/admins/renew-token",
+        "/api/v1/users/check-login-id",
+        "/api/v1/users/renew-token"
       };
   public static final String[] POST_PUBLIC =
       new String[] {
-        "/api/v1/admins/login",
+        "/api/v1/admins/login", "/api/v1/users/login",
       };
 
   @Bean

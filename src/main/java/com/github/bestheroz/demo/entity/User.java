@@ -5,13 +5,14 @@ import com.github.bestheroz.standard.common.entity.converter.JsonAttributeConver
 import com.github.bestheroz.standard.common.enums.AuthorityEnum;
 import com.github.bestheroz.standard.common.enums.UserTypeEnum;
 import com.github.bestheroz.standard.common.security.Operator;
+import com.github.bestheroz.standard.common.util.PasswordUtil;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import lombok.*;
 
-// 위 파이썬 코드를 참고하여 아래와 같이 작성하자!
 @Getter
 @Setter
 @Entity
@@ -30,7 +31,7 @@ public class User extends IdCreatedUpdated {
   @Column(nullable = false)
   private Boolean useFlag;
 
-  @Convert(converter = JsonAttributeConverter.class)
+  @Convert(converter = AuthorityEnum.AuthorityEnumListConverter.class)
   @Column(columnDefinition = "json", nullable = false)
   private List<AuthorityEnum> authorities;
 
@@ -61,11 +62,12 @@ public class User extends IdCreatedUpdated {
       Operator operator) {
     Instant now = Instant.now();
     this.loginId = loginId;
-    this.password = password;
+    this.password = PasswordUtil.getPasswordHash(password);
     this.name = name;
     this.useFlag = useFlag;
     this.authorities = authorities;
     this.joinedAt = now;
+    this.additionalInfo = Map.of();
     this.removedFlag = false;
     this.setCreatedBy(operator, now);
     this.setUpdatedBy(operator, now);
@@ -78,5 +80,47 @@ public class User extends IdCreatedUpdated {
     user.setName(operator.getName());
     user.setAuthorities(operator.getAuthorityList());
     return user;
+  }
+
+  public void update(
+      String loginId,
+      String password,
+      String name,
+      Boolean useFlag,
+      List<AuthorityEnum> authorities,
+      Operator operator) {
+    this.loginId = loginId;
+    this.name = name;
+    this.useFlag = useFlag;
+    this.authorities = authorities;
+    Instant now = Instant.now();
+    this.setUpdatedBy(operator, now);
+    if (StringUtils.isNotEmpty(password)) {
+      this.password = PasswordUtil.getPasswordHash(password);
+      this.changePasswordAt = now;
+    }
+  }
+
+  public void changePassword(String password, Operator operator) {
+    this.password = PasswordUtil.getPasswordHash(password);
+    Instant now = Instant.now();
+    this.changePasswordAt = now;
+    this.setUpdatedBy(operator, now);
+  }
+
+  public void remove(Operator operator) {
+    this.removedFlag = true;
+    Instant now = Instant.now();
+    this.removedAt = now;
+    this.setUpdatedBy(operator, now);
+  }
+
+  public void renewToken(String token) {
+    this.token = token;
+    this.latestActiveAt = Instant.now();
+  }
+
+  public void logout() {
+    this.token = null;
   }
 }

@@ -1,7 +1,6 @@
 package com.github.bestheroz.standard.common.enums;
 
 import com.github.bestheroz.standard.common.entity.converter.GenericEnumListJsonConverter;
-import jakarta.persistence.Converter;
 import lombok.Getter;
 
 @Getter
@@ -19,7 +18,6 @@ public enum AuthorityEnum {
     this.value = value;
   }
 
-  @Converter(autoApply = true)
   public static class AuthorityEnumListConverter
       extends GenericEnumListJsonConverter<AuthorityEnum> {
     public AuthorityEnumListConverter() {

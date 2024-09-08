@@ -17,7 +17,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-// 위 파이썬 코드를 참고하여 아래와 같이 작성하자!
 @Getter
 @Setter
 @Entity

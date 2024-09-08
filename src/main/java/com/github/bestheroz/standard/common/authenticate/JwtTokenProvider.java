@@ -114,7 +114,9 @@ public class JwtTokenProvider {
   }
 
   private DecodedJWT verifyToken(String token) {
-    return JWT.require(algorithm).build().verify(token);
+    System.out.println("token = " + token);
+    System.out.println("token.replace(\"Bearer \", \"\") = " + token.replace("Bearer ", ""));
+    return JWT.require(algorithm).build().verify(token.replace("Bearer ", ""));
   }
 
   private Claim getClaim(String token, String claimName) {

@@ -49,11 +49,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String requestURI = new UrlPathHelper().getPathWithinApplication(request);
 
     if (requestURI.equals("/")) {
-      response.sendError(HttpServletResponse.SC_FORBIDDEN);
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
 
-    if (!requestURI.startsWith("/public/api/v1/health/")) {
+    if (!requestURI.startsWith("/api/v1/health/")) {
       log.info(
           REQUEST_PARAMETERS,
           request.getMethod(),
@@ -91,7 +91,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       filterChain.doFilter(request, response);
     } finally {
       stopWatch.stop();
-      if (!requestURI.startsWith("/public/api/v1/health/")) {
+      if (!requestURI.startsWith("/api/v1/health/")) {
         log.info(REQUEST_COMPLETE_EXECUTE_TIME, requestURI, stopWatch);
       }
     }

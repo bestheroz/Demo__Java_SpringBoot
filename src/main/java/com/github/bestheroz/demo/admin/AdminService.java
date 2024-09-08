@@ -16,14 +16,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AdminService {
   private final AdminRepository adminRepository;
   private final JwtTokenProvider jwtTokenProvider;
 
+  @Transactional(readOnly = true)
   public ListResult<AdminDto.Response> getAdminList(AdminDto.Request request) {
     return ListResult.of(
         adminRepository
@@ -33,6 +36,7 @@ public class AdminService {
             .map(AdminDto.Response::fromEntity));
   }
 
+  @Transactional(readOnly = true)
   public AdminDto.Response getAdmin(final Long id) {
     return this.adminRepository
         .findById(id)
@@ -123,7 +127,7 @@ public class AdminService {
       log.warn("password not match");
       throw new RequestException400(ExceptionCode.UNKNOWN_ADMIN);
     }
-    admin.renewToken(PasswordUtil.getPasswordHash(request.getPassword()));
+    admin.renewToken(jwtTokenProvider.createRefreshToken(new Operator(admin)));
     return new TokenDto(jwtTokenProvider.createAccessToken(new Operator(admin)), admin.getToken());
   }
 
@@ -143,7 +147,7 @@ public class AdminService {
       return new TokenDto(
           jwtTokenProvider.createAccessToken(new Operator(admin)), admin.getToken());
     } else if (StringUtils.equals(admin.getToken(), refreshToken)) {
-      admin.renewToken(PasswordUtil.getPasswordHash(refreshToken));
+      admin.renewToken(jwtTokenProvider.createRefreshToken(new Operator(admin)));
       return new TokenDto(
           jwtTokenProvider.createAccessToken(new Operator(admin)), admin.getToken());
     } else {
@@ -159,6 +163,7 @@ public class AdminService {
     admin.logout();
   }
 
+  @Transactional(readOnly = true)
   public Boolean checkLoginId(String loginId, Long id) {
     return this.adminRepository.findByLoginIdAndRemovedFlagFalseAndIdNot(loginId, id).isEmpty();
   }

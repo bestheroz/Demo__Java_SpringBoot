@@ -1,7 +1,6 @@
 package com.github.bestheroz.demo.entity;
 
 import com.github.bestheroz.standard.common.entity.IdCreatedUpdated;
-import com.github.bestheroz.standard.common.entity.converter.JsonAttributeConverter;
 import com.github.bestheroz.standard.common.enums.AuthorityEnum;
 import com.github.bestheroz.standard.common.enums.UserTypeEnum;
 import com.github.bestheroz.standard.common.security.Operator;
@@ -40,7 +39,7 @@ public class Admin extends IdCreatedUpdated {
   @Column(nullable = false)
   private Boolean managerFlag;
 
-  @Convert(converter = JsonAttributeConverter.class)
+  @Convert(converter = AuthorityEnum.AuthorityEnumListConverter.class)
   @Column(columnDefinition = "json", nullable = false)
   private List<AuthorityEnum> authorities;
 

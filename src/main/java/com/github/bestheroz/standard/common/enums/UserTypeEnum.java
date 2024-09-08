@@ -2,7 +2,9 @@ package com.github.bestheroz.standard.common.enums;
 
 import com.github.bestheroz.standard.common.entity.converter.GenericEnumConverter;
 import jakarta.persistence.Converter;
+import lombok.Getter;
 
+@Getter
 public enum UserTypeEnum {
   ADMIN("admin"),
   USER("user");
@@ -11,10 +13,6 @@ public enum UserTypeEnum {
 
   UserTypeEnum(String value) {
     this.value = value;
-  }
-
-  public String getValue() {
-    return value;
   }
 
   @Converter(autoApply = true)

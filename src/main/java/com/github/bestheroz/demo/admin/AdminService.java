@@ -34,7 +34,10 @@ public class AdminService {
   }
 
   public AdminDto.Response getAdmin(final Long id) {
-    return this.adminRepository.findById(id).map(AdminDto.Response::fromEntity).orElse(null);
+    return this.adminRepository
+        .findById(id)
+        .map(AdminDto.Response::fromEntity)
+        .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_ADMIN));
   }
 
   public AdminDto.Response createAdmin(final AdminCreateDto.Request request, Operator operator) {

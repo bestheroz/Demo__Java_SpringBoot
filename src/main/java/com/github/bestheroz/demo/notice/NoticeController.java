@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,7 +40,7 @@ public class NoticeController {
   }
 
   @PutMapping("{id}")
-  @Authenticated(authority = "NOTICE_EDIT")
+  @PreAuthorize("hasAuthority('NOTICE_EDIT')")
   public NoticeDto.Response updateNotice(
       @PathVariable Long id,
       @RequestBody NoticeCreateDto.Request request,

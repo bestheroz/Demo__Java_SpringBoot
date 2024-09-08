@@ -78,7 +78,6 @@ public class User extends IdCreatedUpdated {
     user.setId(operator.getId());
     user.setLoginId(operator.getLoginId());
     user.setName(operator.getName());
-    user.setAuthorities(operator.getAuthorityList());
     return user;
   }
 

@@ -87,7 +87,6 @@ public class Admin extends IdCreatedUpdated {
     admin.setLoginId(operator.getLoginId());
     admin.setName(operator.getName());
     admin.setManagerFlag(operator.getManagerFlag());
-    admin.setAuthorities(operator.getAuthorityList());
     return admin;
   }
 

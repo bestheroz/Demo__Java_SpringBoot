@@ -64,10 +64,6 @@ public class Operator implements UserDetails {
         .toList();
   }
 
-  public List<AuthorityEnum> getAuthorityList() {
-    return authorities;
-  }
-
   @Override
   public String getPassword() {
     return null;

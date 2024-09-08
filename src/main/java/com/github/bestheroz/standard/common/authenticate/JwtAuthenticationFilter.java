@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -24,6 +25,7 @@ import org.springframework.web.util.UrlPathHelper;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private static final String REQUEST_COMPLETE_EXECUTE_TIME =
@@ -31,14 +33,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private static final String REQUEST_PARAMETERS = "<{}>{}?{}";
 
   private final JwtTokenProvider jwtTokenProvider;
-  private final List<AntPathRequestMatcher> publicGetPaths;
-  private final List<AntPathRequestMatcher> publicPostPaths;
-
-  public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-    this.jwtTokenProvider = jwtTokenProvider;
-    this.publicGetPaths = Arrays.stream(GET_PUBLIC).map(AntPathRequestMatcher::new).toList();
-    this.publicPostPaths = Arrays.stream(POST_PUBLIC).map(AntPathRequestMatcher::new).toList();
-  }
+  private final List<AntPathRequestMatcher> publicGetPaths =
+      Arrays.stream(GET_PUBLIC).map(AntPathRequestMatcher::new).toList();
+  private final List<AntPathRequestMatcher> publicPostPaths =
+      Arrays.stream(POST_PUBLIC).map(AntPathRequestMatcher::new).toList();
 
   @Override
   protected void doFilterInternal(

@@ -5,6 +5,7 @@ import com.github.bestheroz.standard.common.authenticate.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,14 +26,21 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
   private final AuthenticationConfiguration authenticationConfiguration;
   private final JwtTokenProvider jwtTokenProvider;
-  public static final String[] PUBLIC =
+  public static final String[] GET_PUBLIC =
       new String[] {
         "/swagger-ui.html",
         "/swagger-ui/**",
         "/v3/api-docs/**",
         "/webjars/**",
         "/favicon.ico",
-        "/public/api/**",
+        "/api/v1/health/**",
+        "/api/v1/notices",
+        "/api/v1/notices/{id}",
+        "/api/v1/admins/check-login-id",
+      };
+  public static final String[] POST_PUBLIC =
+      new String[] {
+        "/api/v1/admins/login",
       };
 
   @Bean
@@ -47,7 +55,13 @@ public class SecurityConfig {
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
-            auth -> auth.requestMatchers(PUBLIC).permitAll().anyRequest().authenticated())
+            auth ->
+                auth.requestMatchers(HttpMethod.GET, GET_PUBLIC)
+                    .permitAll()
+                    .requestMatchers(HttpMethod.POST, POST_PUBLIC)
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
     return http.build();

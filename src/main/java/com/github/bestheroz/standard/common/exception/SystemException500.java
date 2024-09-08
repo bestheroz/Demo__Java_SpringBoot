@@ -8,7 +8,7 @@ public class SystemException500 extends RuntimeException {
   private final ExceptionCode exceptionCode;
 
   public SystemException500() {
-    this.exceptionCode = ExceptionCode.INVALID_PARAMETER;
+    this.exceptionCode = ExceptionCode.UNKNOWN_SYSTEM_ERROR;
     this.data = null;
   }
 
@@ -18,7 +18,7 @@ public class SystemException500 extends RuntimeException {
   }
 
   public SystemException500(final Object data) {
-    this.exceptionCode = ExceptionCode.INVALID_PARAMETER;
+    this.exceptionCode = ExceptionCode.UNKNOWN_SYSTEM_ERROR;
     this.data = data;
   }
 

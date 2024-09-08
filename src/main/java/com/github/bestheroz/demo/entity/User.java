@@ -4,6 +4,7 @@ import com.github.bestheroz.standard.common.entity.IdCreatedUpdated;
 import com.github.bestheroz.standard.common.entity.converter.JsonAttributeConverter;
 import com.github.bestheroz.standard.common.enums.AuthorityEnum;
 import com.github.bestheroz.standard.common.enums.UserTypeEnum;
+import com.github.bestheroz.standard.common.security.Operator;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.List;
@@ -49,5 +50,33 @@ public class User extends IdCreatedUpdated {
 
   public UserTypeEnum getType() {
     return UserTypeEnum.USER;
+  }
+
+  public User(
+      String loginId,
+      String password,
+      String name,
+      Boolean useFlag,
+      List<AuthorityEnum> authorities,
+      Operator operator) {
+    Instant now = Instant.now();
+    this.loginId = loginId;
+    this.password = password;
+    this.name = name;
+    this.useFlag = useFlag;
+    this.authorities = authorities;
+    this.joinedAt = now;
+    this.removedFlag = false;
+    this.setCreatedBy(operator, now);
+    this.setUpdatedBy(operator, now);
+  }
+
+  public static User fromOperator(Operator operator) {
+    User user = new User();
+    user.setId(operator.getId());
+    user.setLoginId(operator.getLoginId());
+    user.setName(operator.getName());
+    user.setAuthorities(operator.getAuthorityList());
+    return user;
   }
 }

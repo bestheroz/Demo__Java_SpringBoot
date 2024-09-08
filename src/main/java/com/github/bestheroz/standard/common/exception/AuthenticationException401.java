@@ -8,7 +8,7 @@ public class AuthenticationException401 extends RuntimeException {
   private final ExceptionCode exceptionCode;
 
   public AuthenticationException401() {
-    this.exceptionCode = ExceptionCode.INVALID_PARAMETER;
+    this.exceptionCode = ExceptionCode.UNKNOWN_AUTHENTICATION;
     this.data = null;
   }
 
@@ -18,7 +18,7 @@ public class AuthenticationException401 extends RuntimeException {
   }
 
   public AuthenticationException401(final Object data) {
-    this.exceptionCode = ExceptionCode.INVALID_PARAMETER;
+    this.exceptionCode = ExceptionCode.UNKNOWN_AUTHENTICATION;
     this.data = data;
   }
 

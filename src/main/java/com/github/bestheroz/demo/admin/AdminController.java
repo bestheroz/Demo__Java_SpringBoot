@@ -28,6 +28,20 @@ public class AdminController {
     return adminService.getAdminList(new AdminDto.Request(page, pageSize));
   }
 
+  @GetMapping("check-login-id")
+  @Operation(summary = "로그인 아이디 중복 확인")
+  public boolean checkLoginId(
+      @Schema(description = "로그인 아이디") @RequestParam String loginId,
+      @Schema(description = "관리자 ID") @RequestParam(required = false) Long id) {
+    return adminService.checkLoginId(loginId, id);
+  }
+
+  @PostMapping("login")
+  @Operation(summary = "관리자 로그인")
+  public TokenDto loginAdmin(@RequestBody AdminLoginDto.Request request) {
+    return adminService.loginAdmin(request);
+  }
+
   @GetMapping("{id}")
   @Authenticated
   public AdminDto.Response getAdmin(@PathVariable Long id) {

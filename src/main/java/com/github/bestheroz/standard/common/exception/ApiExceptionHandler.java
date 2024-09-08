@@ -51,8 +51,11 @@ public class ApiExceptionHandler {
   public ResponseEntity<ApiResult<?>> authenticationException401(
       final AuthenticationException401 e) {
     log.warn(LogUtils.getStackTrace(e));
-    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        .body(ApiResult.of(e.getExceptionCode(), e.getData()));
+    ResponseEntity.BodyBuilder builder = ResponseEntity.status(HttpStatus.UNAUTHORIZED);
+    if (e.getExceptionCode().equals(ExceptionCode.EXPIRED_TOKEN)) {
+      builder.header("token", "must-renew");
+    }
+    return builder.body(ApiResult.of(e.getExceptionCode(), e.getData()));
   }
 
   @ExceptionHandler({AuthorityException403.class})

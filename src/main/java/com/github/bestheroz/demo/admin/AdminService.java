@@ -27,9 +27,9 @@ public class AdminService {
   public ListResult<AdminDto.Response> getAdminList(AdminDto.Request request) {
     return ListResult.of(
         adminRepository
-            .findAll(
+            .findAllByRemovedFlagIsFalse(
                 PageRequest.of(
-                    request.getPage(), request.getPageSize(), Sort.by("id").descending()))
+                    request.getPage() - 1, request.getPageSize(), Sort.by("id").descending()))
             .map(AdminDto.Response::fromEntity));
   }
 

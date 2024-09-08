@@ -4,6 +4,7 @@ import com.github.bestheroz.demo.entity.Admin;
 import com.github.bestheroz.demo.entity.User;
 import com.github.bestheroz.standard.common.dto.UserSimpleDto;
 import com.github.bestheroz.standard.common.enums.UserTypeEnum;
+import com.github.bestheroz.standard.common.security.Operator;
 import jakarta.persistence.*;
 import java.time.Instant;
 import lombok.Getter;
@@ -17,12 +18,13 @@ public class IdCreated {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(updatable = false)
   private Instant createdAt;
 
-  @Column(name = "created_object_type")
+  @Column(name = "created_object_type", updatable = false)
   private UserTypeEnum createdObjectType;
 
-  @Column(name = "created_object_id")
+  @Column(name = "created_object_id", updatable = false)
   private Long createdObjectId;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -40,6 +42,19 @@ public class IdCreated {
       insertable = false,
       updatable = false)
   private User createdByUser;
+
+  public void setCreatedBy(Operator operator, Instant instant) {
+    if (operator.getType().equals(UserTypeEnum.ADMIN)) {
+      this.createdObjectType = UserTypeEnum.ADMIN;
+      this.createdByAdmin = Admin.fromOperator(operator);
+    } else if (operator.getType().equals(UserTypeEnum.USER)) {
+      this.createdObjectType = UserTypeEnum.USER;
+      this.createdByUser = User.fromOperator(operator);
+    }
+    this.setCreatedAt(instant);
+    this.setCreatedObjectId(operator.getId());
+    this.setCreatedObjectType(operator.getType());
+  }
 
   public UserSimpleDto getCreatedBy() {
     return switch (this.createdObjectType) {

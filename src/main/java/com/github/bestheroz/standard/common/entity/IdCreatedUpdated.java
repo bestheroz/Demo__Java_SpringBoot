@@ -4,6 +4,7 @@ import com.github.bestheroz.demo.entity.Admin;
 import com.github.bestheroz.demo.entity.User;
 import com.github.bestheroz.standard.common.dto.UserSimpleDto;
 import com.github.bestheroz.standard.common.enums.UserTypeEnum;
+import com.github.bestheroz.standard.common.security.Operator;
 import jakarta.persistence.*;
 import java.time.Instant;
 import lombok.Getter;
@@ -36,6 +37,19 @@ public class IdCreatedUpdated extends IdCreated {
       insertable = false,
       updatable = false)
   private User updatedByUser;
+
+  public void setUpdatedBy(Operator operator, Instant instant) {
+    if (operator.getType().equals(UserTypeEnum.ADMIN)) {
+      this.updatedObjectType = UserTypeEnum.ADMIN;
+      this.updatedByAdmin = Admin.fromOperator(operator);
+    } else if (operator.getType().equals(UserTypeEnum.USER)) {
+      this.updatedObjectType = UserTypeEnum.USER;
+      this.updatedByUser = User.fromOperator(operator);
+    }
+    this.setUpdatedAt(instant);
+    this.setUpdatedObjectId(operator.getId());
+    this.setUpdatedObjectType(operator.getType());
+  }
 
   public UserSimpleDto getUpdatedBy() {
     return switch (this.updatedObjectType) {

@@ -4,6 +4,7 @@ import com.github.bestheroz.standard.common.entity.IdCreatedUpdated;
 import com.github.bestheroz.standard.common.security.Operator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import java.io.Serializable;
 import java.time.Instant;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notice extends IdCreatedUpdated {
+public class Notice extends IdCreatedUpdated implements Serializable {
   @Column(nullable = false)
   private String title;
 
@@ -32,29 +33,22 @@ public class Notice extends IdCreatedUpdated {
     this.useFlag = useFlag;
     this.removedFlag = false;
     Instant now = Instant.now();
-    this.setCreatedAt(now);
-    this.setCreatedObjectId(operator.getId());
-    this.setCreatedObjectType(operator.getType());
-    this.setUpdatedAt(now);
-    this.setUpdatedObjectId(operator.getId());
-    this.setUpdatedObjectType(operator.getType());
+    this.setCreatedBy(operator, now);
+    this.setUpdatedBy(operator, now);
   }
 
   public void update(String title, String content, Boolean useFlag, Operator operator) {
     this.title = title;
     this.content = content;
     this.useFlag = useFlag;
-    this.setUpdatedAt(Instant.now());
-    this.setUpdatedObjectId(operator.getId());
-    this.setUpdatedObjectType(operator.getType());
+    Instant now = Instant.now();
+    this.setUpdatedBy(operator, now);
   }
 
   public void remove(Operator operator) {
     this.removedFlag = true;
     Instant now = Instant.now();
     this.removedAt = now;
-    this.setUpdatedAt(now);
-    this.setUpdatedObjectId(operator.getId());
-    this.setUpdatedObjectType(operator.getType());
+    this.setUpdatedBy(operator, now);
   }
 }

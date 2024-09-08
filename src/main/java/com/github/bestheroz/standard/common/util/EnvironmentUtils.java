@@ -6,7 +6,8 @@ import org.springframework.core.env.AbstractEnvironment;
 @UtilityClass
 public class EnvironmentUtils {
   public String getActivateProfile() {
-    return System.getProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME);
+    String property = System.getProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME);
+    return property == null ? "local" : property;
   }
 
   public Boolean isLocal() {

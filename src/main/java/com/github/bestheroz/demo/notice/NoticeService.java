@@ -21,9 +21,9 @@ public class NoticeService {
   public ListResult<NoticeDto.Response> getNoticeList(NoticeDto.Request request) {
     return ListResult.of(
         noticeRepository
-            .findAll(
+            .findAllByRemovedFlagIsFalse(
                 PageRequest.of(
-                    request.getPage(), request.getPageSize(), Sort.by("id").descending()))
+                    request.getPage() - 1, request.getPageSize(), Sort.by("id").descending()))
             .map(NoticeDto.Response::fromEntity));
   }
 

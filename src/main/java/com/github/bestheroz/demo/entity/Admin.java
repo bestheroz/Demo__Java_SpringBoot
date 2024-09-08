@@ -73,19 +73,24 @@ public class Admin extends IdCreatedUpdated {
     Instant now = Instant.now();
     this.loginId = loginId;
     this.password = PasswordUtil.getPasswordHash(password);
-    ;
     this.name = name;
     this.useFlag = useFlag;
     this.managerFlag = managerFlag;
     this.authorities = authorities;
     this.joinedAt = now;
     this.removedFlag = false;
-    this.setCreatedAt(now);
-    this.setCreatedObjectId(operator.getId());
-    this.setCreatedObjectType(operator.getType());
-    this.setUpdatedAt(now);
-    this.setUpdatedObjectId(operator.getId());
-    this.setUpdatedObjectType(operator.getType());
+    this.setCreatedBy(operator, now);
+    this.setUpdatedBy(operator, now);
+  }
+
+  public static Admin fromOperator(Operator operator) {
+    Admin admin = new Admin();
+    admin.setId(operator.getId());
+    admin.setLoginId(operator.getLoginId());
+    admin.setName(operator.getName());
+    admin.setManagerFlag(operator.getManagerFlag());
+    admin.setAuthorities(operator.getAuthorityList());
+    return admin;
   }
 
   public void update(
@@ -101,12 +106,11 @@ public class Admin extends IdCreatedUpdated {
     this.useFlag = useFlag;
     this.managerFlag = managerFlag;
     this.authorities = authorities;
-    this.setUpdatedAt(Instant.now());
-    this.setUpdatedObjectId(operator.getId());
-    this.setUpdatedObjectType(operator.getType());
+    Instant now = Instant.now();
+    this.setUpdatedBy(operator, now);
     if (StringUtils.isNotEmpty(password)) {
       this.password = PasswordUtil.getPasswordHash(password);
-      this.changePasswordAt = Instant.now();
+      this.changePasswordAt = now;
     }
   }
 
@@ -114,18 +118,14 @@ public class Admin extends IdCreatedUpdated {
     this.password = PasswordUtil.getPasswordHash(password);
     Instant now = Instant.now();
     this.changePasswordAt = now;
-    this.setUpdatedAt(now);
-    this.setUpdatedObjectId(operator.getId());
-    this.setUpdatedObjectType(operator.getType());
+    this.setUpdatedBy(operator, now);
   }
 
   public void remove(Operator operator) {
     this.removedFlag = true;
     Instant now = Instant.now();
     this.removedAt = now;
-    this.setUpdatedAt(now);
-    this.setUpdatedObjectId(operator.getId());
-    this.setUpdatedObjectType(operator.getType());
+    this.setUpdatedBy(operator, now);
   }
 
   public void renewToken(String token) {

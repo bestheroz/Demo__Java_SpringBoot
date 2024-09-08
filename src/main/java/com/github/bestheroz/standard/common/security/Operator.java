@@ -6,7 +6,6 @@ import com.github.bestheroz.standard.common.enums.AuthorityEnum;
 import com.github.bestheroz.standard.common.enums.UserTypeEnum;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -61,7 +60,11 @@ public class Operator implements UserDetails {
     // 관리자 권한이 있을 경우 전체 권한을 부여하고, 그렇지 않으면 주어진 권한을 사용
     return authorities.stream()
         .map(authority -> new SimpleGrantedAuthority(authority.name()))
-        .collect(Collectors.toList());
+        .toList();
+  }
+
+  public List<AuthorityEnum> getAuthorityList() {
+    return authorities;
   }
 
   @Override

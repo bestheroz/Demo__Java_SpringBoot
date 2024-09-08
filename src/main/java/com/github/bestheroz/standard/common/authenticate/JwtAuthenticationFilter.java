@@ -1,6 +1,7 @@
 package com.github.bestheroz.standard.common.authenticate;
 
-import static com.github.bestheroz.standard.config.SecurityConfig.PUBLIC;
+import static com.github.bestheroz.standard.config.SecurityConfig.GET_PUBLIC;
+import static com.github.bestheroz.standard.config.SecurityConfig.POST_PUBLIC;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,11 +32,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private static final String REQUEST_PARAMETERS = "<{}>{}?{}";
 
   private final JwtTokenProvider jwtTokenProvider;
-  private final List<AntPathRequestMatcher> publicPaths;
+  private final List<AntPathRequestMatcher> publicGetPaths;
+  private final List<AntPathRequestMatcher> publicPostPaths;
 
   public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
     this.jwtTokenProvider = jwtTokenProvider;
-    this.publicPaths = Arrays.stream(PUBLIC).map(AntPathRequestMatcher::new).toList();
+    this.publicGetPaths = Arrays.stream(GET_PUBLIC).map(AntPathRequestMatcher::new).toList();
+    this.publicPostPaths = Arrays.stream(POST_PUBLIC).map(AntPathRequestMatcher::new).toList();
   }
 
   @Override
@@ -73,7 +77,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return;
       }
 
-      if (jwtTokenProvider.validateToken(token)) {
+      if (!jwtTokenProvider.validateToken(token)) {
         log.info("Invalid access token - refresh token required");
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid access token");
         return;
@@ -94,6 +98,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   }
 
   private boolean isPublicPath(HttpServletRequest request) {
-    return publicPaths.stream().anyMatch(matcher -> matcher.matches(request));
+    if (request.getMethod().equals(HttpMethod.GET.toString())) {
+      return publicGetPaths.stream().anyMatch(matcher -> matcher.matches(request));
+    } else if (request.getMethod().equals(HttpMethod.POST.toString())) {
+      return publicPostPaths.stream().anyMatch(matcher -> matcher.matches(request));
+    } else {
+      return false;
+    }
   }
 }

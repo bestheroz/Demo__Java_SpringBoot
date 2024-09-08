@@ -15,7 +15,7 @@ create table user
     joined_at timestamp,
     additional_info JSON    null,
 
-    removed_flag tinyint not null,
+    removed_flag     tinyint  defulat 0 not null,
     removed_at timestamp,
 
     created_at timestamp not null,

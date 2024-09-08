@@ -1,12 +1,12 @@
 package com.github.bestheroz.demo.notice;
 
-import com.github.bestheroz.standard.common.authenticate.Authenticated;
 import com.github.bestheroz.standard.common.authenticate.CurrentUser;
 import com.github.bestheroz.standard.common.dto.ListResult;
 import com.github.bestheroz.standard.common.security.Operator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,13 +33,15 @@ public class NoticeController {
   }
 
   @PostMapping
-  @Authenticated(authority = "NOTICE_EDIT")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('NOTICE_EDIT')")
   public NoticeDto.Response createNotice(
       @RequestBody NoticeCreateDto.Request request, @CurrentUser Operator operator) {
     return noticeService.createNotice(request, operator);
   }
 
   @PutMapping("{id}")
+  @SecurityRequirement(name = "bearerAuth")
   @PreAuthorize("hasAuthority('NOTICE_EDIT')")
   public NoticeDto.Response updateNotice(
       @PathVariable Long id,
@@ -52,8 +54,9 @@ public class NoticeController {
   @Operation(
       description = "(Soft delete)",
       responses = {@ApiResponse(responseCode = "204")})
-  @Authenticated(authority = "NOTICE_EDIT")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('NOTICE_EDIT')")
   public void deleteNotice(@PathVariable Long id, @CurrentUser Operator operator) {
     noticeService.deleteNotice(id, operator);
   }

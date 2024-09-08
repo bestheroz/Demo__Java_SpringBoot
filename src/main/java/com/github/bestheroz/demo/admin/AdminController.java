@@ -1,6 +1,5 @@
 package com.github.bestheroz.demo.admin;
 
-import com.github.bestheroz.standard.common.authenticate.Authenticated;
 import com.github.bestheroz.standard.common.authenticate.CurrentUser;
 import com.github.bestheroz.standard.common.dto.ListResult;
 import com.github.bestheroz.standard.common.dto.TokenDto;
@@ -8,9 +7,11 @@ import com.github.bestheroz.standard.common.security.Operator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +22,8 @@ public class AdminController {
   private final AdminService adminService;
 
   @GetMapping
-  @Authenticated(authority = "ADMIN_VIEW")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('ADMIN_VIEW')")
   public ListResult<AdminDto.Response> getAdminList(
       @Schema(example = "1") @RequestParam Integer page,
       @Schema(example = "10") @RequestParam Integer pageSize) {
@@ -43,7 +45,8 @@ public class AdminController {
   }
 
   @GetMapping("{id}")
-  @Authenticated(authority = "ADMIN_VIEW")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('ADMIN_VIEW')")
   public AdminDto.Response getAdmin(@PathVariable Long id) {
     return adminService.getAdmin(id);
   }
@@ -61,14 +64,16 @@ public class AdminController {
   }
 
   @PostMapping
-  @Authenticated(authority = "ADMIN_EDIT")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('ADMIN_EDIT')")
   public AdminDto.Response createAdmin(
       @RequestBody AdminCreateDto.Request request, @CurrentUser Operator operator) {
     return adminService.createAdmin(request, operator);
   }
 
   @PutMapping("{id}")
-  @Authenticated(authority = "ADMIN_EDIT")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('ADMIN_EDIT')")
   public AdminDto.Response updateAdmin(
       @PathVariable Long id,
       @RequestBody AdminUpdateDto.Request request,
@@ -78,7 +83,8 @@ public class AdminController {
 
   @PatchMapping("{id}/password")
   @Operation(summary = "관리자 비밀번호 변경")
-  @Authenticated(authority = "ADMIN_EDIT")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('ADMIN_EDIT')")
   public AdminDto.Response changePassword(
       @PathVariable Long id,
       @RequestBody AdminChangePasswordDto.Request request,
@@ -91,8 +97,9 @@ public class AdminController {
       summary = "관리자 로그아웃",
       description = "리플래시 토큰을 삭제합니다.",
       responses = {@ApiResponse(responseCode = "204")})
-  @Authenticated(authority = "ADMIN_EDIT")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('ADMIN_EDIT')")
   public void logout(@CurrentUser Operator operator) {
     adminService.logout(operator.getId());
   }
@@ -101,8 +108,9 @@ public class AdminController {
   @Operation(
       description = "(Soft delete)",
       responses = {@ApiResponse(responseCode = "204")})
-  @Authenticated(authority = "ADMIN_EDIT")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('ADMIN_EDIT')")
   public void deleteAdmin(@PathVariable Long id, @CurrentUser Operator operator) {
     adminService.deleteAdmin(id, operator);
   }

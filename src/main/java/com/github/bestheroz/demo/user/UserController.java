@@ -1,6 +1,5 @@
 package com.github.bestheroz.demo.user;
 
-import com.github.bestheroz.standard.common.authenticate.Authenticated;
 import com.github.bestheroz.standard.common.authenticate.CurrentUser;
 import com.github.bestheroz.standard.common.dto.ListResult;
 import com.github.bestheroz.standard.common.dto.TokenDto;
@@ -8,9 +7,11 @@ import com.github.bestheroz.standard.common.security.Operator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +22,8 @@ public class UserController {
   private final UserService userService;
 
   @GetMapping
-  @Authenticated(authority = "USER_VIEW")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('USER_VIEW')")
   public ListResult<UserDto.Response> getUserList(
       @Schema(example = "1") @RequestParam Integer page,
       @Schema(example = "10") @RequestParam Integer pageSize) {
@@ -43,7 +45,8 @@ public class UserController {
   }
 
   @GetMapping("{id}")
-  @Authenticated(authority = "USER_VIEW")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('USER_VIEW')")
   public UserDto.Response getUser(@PathVariable Long id) {
     return userService.getUser(id);
   }
@@ -54,7 +57,6 @@ public class UserController {
       description =
           "*어세스 토큰* 만료 시 *리플래시 토큰* 으로 *어세스 토큰* 을 갱신합니다.\n"
               + "    \"(동시에 여러 사용자가 접속하고 있다면 *리플래시 토큰* 값이 달라서 갱신이 안될 수 있습니다.)")
-  @Authenticated(authority = "USER_VIEW")
   public TokenDto renewToken(
       @Schema(description = "리플래시 토큰") @RequestHeader(value = "AuthorizationR")
           String refreshToken) {
@@ -62,14 +64,16 @@ public class UserController {
   }
 
   @PostMapping
-  @Authenticated(authority = "USER_EDIT")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('USER_EDIT')")
   public UserDto.Response createUser(
       @RequestBody UserCreateDto.Request request, @CurrentUser Operator operator) {
     return userService.createUser(request, operator);
   }
 
   @PutMapping("{id}")
-  @Authenticated(authority = "USER_EDIT")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('USER_EDIT')")
   public UserDto.Response updateUser(
       @PathVariable Long id,
       @RequestBody UserUpdateDto.Request request,
@@ -79,7 +83,8 @@ public class UserController {
 
   @PatchMapping("{id}/password")
   @Operation(summary = "관리자 비밀번호 변경")
-  @Authenticated(authority = "USER_EDIT")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('USER_EDIT')")
   public UserDto.Response changePassword(
       @PathVariable Long id,
       @RequestBody UserChangePasswordDto.Request request,
@@ -92,8 +97,9 @@ public class UserController {
       summary = "관리자 로그아웃",
       description = "리플래시 토큰을 삭제합니다.",
       responses = {@ApiResponse(responseCode = "204")})
-  @Authenticated(authority = "USER_EDIT")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('USER_EDIT')")
   public void logout(@CurrentUser Operator operator) {
     userService.logout(operator.getId());
   }
@@ -102,8 +108,9 @@ public class UserController {
   @Operation(
       description = "(Soft delete)",
       responses = {@ApiResponse(responseCode = "204")})
-  @Authenticated(authority = "USER_EDIT")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasAuthority('USER_EDIT')")
   public void deleteUser(@PathVariable Long id, @CurrentUser Operator operator) {
     userService.deleteUser(id, operator);
   }

@@ -2,12 +2,15 @@ package com.github.bestheroz.standard.config;
 
 import com.github.bestheroz.standard.common.authenticate.JwtAuthenticationFilter;
 import com.github.bestheroz.standard.common.authenticate.JwtTokenProvider;
+import com.github.bestheroz.standard.common.exception.AuthorityException403;
+import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
   private final AuthenticationConfiguration authenticationConfiguration;
@@ -65,7 +69,13 @@ public class SecurityConfig {
                     .permitAll()
                     .anyRequest()
                     .authenticated())
-        .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+        .exceptionHandling(
+            exceptionHandling ->
+                exceptionHandling.accessDeniedHandler(
+                    (request, response, accessDeniedException) -> {
+                      throw new AuthorityException403(ExceptionCode.UNKNOWN_AUTHORITY);
+                    }));
 
     return http.build();
   }

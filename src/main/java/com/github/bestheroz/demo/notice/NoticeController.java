@@ -32,14 +32,14 @@ public class NoticeController {
   }
 
   @PostMapping
-  @Authenticated
+  @Authenticated(authority = "NOTICE_EDIT")
   public NoticeDto.Response createNotice(
       @RequestBody NoticeCreateDto.Request request, @CurrentUser Operator operator) {
     return noticeService.createNotice(request, operator);
   }
 
   @PutMapping("{id}")
-  @Authenticated
+  @Authenticated(authority = "NOTICE_EDIT")
   public NoticeDto.Response updateNotice(
       @PathVariable Long id,
       @RequestBody NoticeCreateDto.Request request,
@@ -51,7 +51,7 @@ public class NoticeController {
   @Operation(
       description = "(Soft delete)",
       responses = {@ApiResponse(responseCode = "204")})
-  @Authenticated
+  @Authenticated(authority = "NOTICE_EDIT")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteNotice(@PathVariable Long id, @CurrentUser Operator operator) {
     noticeService.deleteNotice(id, operator);

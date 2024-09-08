@@ -9,6 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("#authority == null || (isAuthenticated() and hasAuthority(#authority))")
 @SecurityRequirement(name = "bearerAuth")
-public @interface Authenticated {}
+public @interface Authenticated {
+  String authority();
+}

@@ -21,7 +21,7 @@ public class UserController {
   private final UserService userService;
 
   @GetMapping
-  @Authenticated
+  @Authenticated(authority = "USER_VIEW")
   public ListResult<UserDto.Response> getUserList(
       @Schema(example = "1") @RequestParam Integer page,
       @Schema(example = "10") @RequestParam Integer pageSize) {
@@ -43,7 +43,7 @@ public class UserController {
   }
 
   @GetMapping("{id}")
-  @Authenticated
+  @Authenticated(authority = "USER_VIEW")
   public UserDto.Response getUser(@PathVariable Long id) {
     return userService.getUser(id);
   }
@@ -54,7 +54,7 @@ public class UserController {
       description =
           "*어세스 토큰* 만료 시 *리플래시 토큰* 으로 *어세스 토큰* 을 갱신합니다.\n"
               + "    \"(동시에 여러 사용자가 접속하고 있다면 *리플래시 토큰* 값이 달라서 갱신이 안될 수 있습니다.)")
-  @Authenticated
+  @Authenticated(authority = "USER_VIEW")
   public TokenDto renewToken(
       @Schema(description = "리플래시 토큰") @RequestHeader(value = "AuthorizationR")
           String refreshToken) {
@@ -62,14 +62,14 @@ public class UserController {
   }
 
   @PostMapping
-  @Authenticated
+  @Authenticated(authority = "USER_EDIT")
   public UserDto.Response createUser(
       @RequestBody UserCreateDto.Request request, @CurrentUser Operator operator) {
     return userService.createUser(request, operator);
   }
 
   @PutMapping("{id}")
-  @Authenticated
+  @Authenticated(authority = "USER_EDIT")
   public UserDto.Response updateUser(
       @PathVariable Long id,
       @RequestBody UserUpdateDto.Request request,
@@ -79,7 +79,7 @@ public class UserController {
 
   @PatchMapping("{id}/password")
   @Operation(summary = "관리자 비밀번호 변경")
-  @Authenticated
+  @Authenticated(authority = "USER_EDIT")
   public UserDto.Response changePassword(
       @PathVariable Long id,
       @RequestBody UserChangePasswordDto.Request request,
@@ -92,7 +92,7 @@ public class UserController {
       summary = "관리자 로그아웃",
       description = "리플래시 토큰을 삭제합니다.",
       responses = {@ApiResponse(responseCode = "204")})
-  @Authenticated
+  @Authenticated(authority = "USER_EDIT")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void logout(@CurrentUser Operator operator) {
     userService.logout(operator.getId());
@@ -102,7 +102,7 @@ public class UserController {
   @Operation(
       description = "(Soft delete)",
       responses = {@ApiResponse(responseCode = "204")})
-  @Authenticated
+  @Authenticated(authority = "USER_EDIT")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteUser(@PathVariable Long id, @CurrentUser Operator operator) {
     userService.deleteUser(id, operator);

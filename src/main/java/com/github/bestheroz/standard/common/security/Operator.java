@@ -58,6 +58,7 @@ public class Operator implements UserDetails {
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     // 관리자 권한이 있을 경우 전체 권한을 부여하고, 그렇지 않으면 주어진 권한을 사용
+    System.out.println("authorities = " + authorities);
     return authorities.stream()
         .map(authority -> new SimpleGrantedAuthority(authority.name()))
         .toList();

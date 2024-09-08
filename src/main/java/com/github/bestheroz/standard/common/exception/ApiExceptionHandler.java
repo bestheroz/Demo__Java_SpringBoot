@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -63,6 +64,14 @@ public class ApiExceptionHandler {
     log.warn(LogUtils.getStackTrace(e));
     return ResponseEntity.status(HttpStatus.FORBIDDEN)
         .body(ApiResult.of(e.getExceptionCode(), e.getData()));
+  }
+
+  @ExceptionHandler({AuthorizationDeniedException.class})
+  public ResponseEntity<ApiResult<?>> authorizationDeniedException(
+      final AuthorizationDeniedException e) {
+    log.warn(LogUtils.getStackTrace(e));
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .body(ApiResult.of(ExceptionCode.UNKNOWN_AUTHORITY));
   }
 
   @ExceptionHandler({SystemException500.class})

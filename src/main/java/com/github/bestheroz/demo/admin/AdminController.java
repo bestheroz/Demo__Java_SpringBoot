@@ -21,7 +21,7 @@ public class AdminController {
   private final AdminService adminService;
 
   @GetMapping
-  @Authenticated
+  @Authenticated(authority = "ADMIN_VIEW")
   public ListResult<AdminDto.Response> getAdminList(
       @Schema(example = "1") @RequestParam Integer page,
       @Schema(example = "10") @RequestParam Integer pageSize) {
@@ -43,7 +43,7 @@ public class AdminController {
   }
 
   @GetMapping("{id}")
-  @Authenticated
+  @Authenticated(authority = "ADMIN_VIEW")
   public AdminDto.Response getAdmin(@PathVariable Long id) {
     return adminService.getAdmin(id);
   }
@@ -54,7 +54,6 @@ public class AdminController {
       description =
           "*어세스 토큰* 만료 시 *리플래시 토큰* 으로 *어세스 토큰* 을 갱신합니다.\n"
               + "    \"(동시에 여러 사용자가 접속하고 있다면 *리플래시 토큰* 값이 달라서 갱신이 안될 수 있습니다.)")
-  @Authenticated
   public TokenDto renewToken(
       @Schema(description = "리플래시 토큰") @RequestHeader(value = "AuthorizationR")
           String refreshToken) {
@@ -62,14 +61,14 @@ public class AdminController {
   }
 
   @PostMapping
-  @Authenticated
+  @Authenticated(authority = "ADMIN_EDIT")
   public AdminDto.Response createAdmin(
       @RequestBody AdminCreateDto.Request request, @CurrentUser Operator operator) {
     return adminService.createAdmin(request, operator);
   }
 
   @PutMapping("{id}")
-  @Authenticated
+  @Authenticated(authority = "ADMIN_EDIT")
   public AdminDto.Response updateAdmin(
       @PathVariable Long id,
       @RequestBody AdminUpdateDto.Request request,
@@ -79,7 +78,7 @@ public class AdminController {
 
   @PatchMapping("{id}/password")
   @Operation(summary = "관리자 비밀번호 변경")
-  @Authenticated
+  @Authenticated(authority = "ADMIN_EDIT")
   public AdminDto.Response changePassword(
       @PathVariable Long id,
       @RequestBody AdminChangePasswordDto.Request request,
@@ -92,7 +91,7 @@ public class AdminController {
       summary = "관리자 로그아웃",
       description = "리플래시 토큰을 삭제합니다.",
       responses = {@ApiResponse(responseCode = "204")})
-  @Authenticated
+  @Authenticated(authority = "ADMIN_EDIT")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void logout(@CurrentUser Operator operator) {
     adminService.logout(operator.getId());
@@ -102,7 +101,7 @@ public class AdminController {
   @Operation(
       description = "(Soft delete)",
       responses = {@ApiResponse(responseCode = "204")})
-  @Authenticated
+  @Authenticated(authority = "ADMIN_EDIT")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteAdmin(@PathVariable Long id, @CurrentUser Operator operator) {
     adminService.deleteAdmin(id, operator);

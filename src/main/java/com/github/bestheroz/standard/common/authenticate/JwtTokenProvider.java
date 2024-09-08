@@ -3,7 +3,6 @@ package com.github.bestheroz.standard.common.authenticate;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.bestheroz.standard.common.enums.AuthorityEnum;
 import com.github.bestheroz.standard.common.enums.UserTypeEnum;
@@ -68,7 +67,7 @@ public class JwtTokenProvider {
   }
 
   public Long getId(String token) {
-    return getClaim(token, "id").asLong();
+    return verifyToken(token).getClaim("id").asLong();
   }
 
   public UserDetails getOperator(String token) {
@@ -115,9 +114,5 @@ public class JwtTokenProvider {
 
   private DecodedJWT verifyToken(String token) {
     return JWT.require(algorithm).build().verify(token.replace("Bearer ", ""));
-  }
-
-  private Claim getClaim(String token, String claimName) {
-    return verifyToken(token).getClaim(claimName);
   }
 }

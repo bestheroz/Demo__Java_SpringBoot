@@ -14,12 +14,13 @@ import lombok.Setter;
 @Setter
 @MappedSuperclass
 public class IdCreatedUpdated extends IdCreated {
-  @Column(name = "updated_object_type")
+  @Column(nullable = false)
   private UserTypeEnum updatedObjectType;
 
+  @Column(nullable = false)
   private Instant updatedAt;
 
-  @Column(name = "updated_object_id")
+  @Column(nullable = false)
   private Long updatedObjectId;
 
   @ManyToOne(fetch = FetchType.LAZY)

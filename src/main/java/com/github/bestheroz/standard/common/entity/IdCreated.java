@@ -18,13 +18,13 @@ public class IdCreated {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, updatable = false)
   private Instant createdAt;
 
-  @Column(nullable = false)
+  @Column(nullable = false, updatable = false)
   private UserTypeEnum createdObjectType;
 
-  @Column(nullable = false)
+  @Column(name = "created_object_id", nullable = false, updatable = false)
   private Long createdObjectId;
 
   @ManyToOne(fetch = FetchType.LAZY)

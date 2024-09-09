@@ -20,7 +20,7 @@ public class IdCreatedUpdated extends IdCreated {
   @Column(nullable = false)
   private Instant updatedAt;
 
-  @Column(nullable = false)
+  @Column(name = "updated_object_id", nullable = false)
   private Long updatedObjectId;
 
   @ManyToOne(fetch = FetchType.LAZY)

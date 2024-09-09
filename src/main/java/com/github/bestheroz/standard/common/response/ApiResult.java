@@ -8,6 +8,6 @@ public record ApiResult<T>(String code, String message, T data) {
   }
 
   public static <T> ApiResult<T> of(final ExceptionCode exceptionCode, final T data) {
-    return new ApiResult<T>(exceptionCode.getCode(), exceptionCode.getMessage(), data);
+    return new ApiResult<T>(exceptionCode.name(), exceptionCode.getMessage(), data);
   }
 }

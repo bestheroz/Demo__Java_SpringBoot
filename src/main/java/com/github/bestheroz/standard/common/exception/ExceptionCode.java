@@ -22,16 +22,14 @@ public enum ExceptionCode {
   EXPIRED_TOKEN("만료된 토큰 정보"),
   CANNOT_CHANGE_OTHERS_PASSWORD("다른 사용자의 비밀번호 변경 불가능");
 
-  private final String code;
   private final String message;
 
   ExceptionCode(final String message) {
-    this.code = this.name();
     this.message = message;
   }
 
   @Override
   public String toString() {
-    return MessageFormat.format("{0}({1}, {2})", this.name(), this.code, this.message);
+    return MessageFormat.format("{0}({1})", this.name(), this.message);
   }
 }

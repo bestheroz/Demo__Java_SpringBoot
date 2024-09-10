@@ -73,12 +73,10 @@ public class User extends IdCreatedUpdated {
     this.setUpdatedBy(operator, now);
   }
 
-  public static User fromOperator(Operator operator) {
-    User user = new User();
-    user.setId(operator.getId());
-    user.setLoginId(operator.getLoginId());
-    user.setName(operator.getName());
-    return user;
+  public User(Operator operator) {
+    this.setId(operator.getId());
+    this.loginId = operator.getLoginId();
+    this.name = operator.getName();
   }
 
   public void update(

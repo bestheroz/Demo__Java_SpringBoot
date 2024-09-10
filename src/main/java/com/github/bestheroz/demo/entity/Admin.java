@@ -81,13 +81,11 @@ public class Admin extends IdCreatedUpdated {
     this.setUpdatedBy(operator, now);
   }
 
-  public static Admin fromOperator(Operator operator) {
-    Admin admin = new Admin();
-    admin.setId(operator.getId());
-    admin.setLoginId(operator.getLoginId());
-    admin.setName(operator.getName());
-    admin.setManagerFlag(operator.getManagerFlag());
-    return admin;
+  public Admin(Operator operator) {
+    this.setId(operator.getId());
+    this.loginId = operator.getLoginId();
+    this.name = operator.getName();
+    this.managerFlag = operator.getManagerFlag();
   }
 
   public void update(

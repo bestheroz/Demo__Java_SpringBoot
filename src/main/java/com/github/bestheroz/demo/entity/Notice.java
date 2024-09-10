@@ -27,14 +27,16 @@ public class Notice extends IdCreatedUpdated implements Serializable {
 
   private Instant removedAt;
 
-  public Notice(String title, String content, Boolean useFlag, Operator operator) {
-    this.title = title;
-    this.content = content;
-    this.useFlag = useFlag;
-    this.removedFlag = false;
+  public static Notice of(String title, String content, Boolean useFlag, Operator operator) {
+    Notice notice = new Notice();
+    notice.title = title;
+    notice.content = content;
+    notice.useFlag = useFlag;
+    notice.removedFlag = false;
     Instant now = Instant.now();
-    this.setCreatedBy(operator, now);
-    this.setUpdatedBy(operator, now);
+    notice.setCreatedBy(operator, now);
+    notice.setUpdatedBy(operator, now);
+    return notice;
   }
 
   public void update(String title, String content, Boolean useFlag, Operator operator) {

@@ -53,7 +53,7 @@ public class User extends IdCreatedUpdated {
     return UserTypeEnum.USER;
   }
 
-  public User(
+  public static User of(
       String loginId,
       String password,
       String name,
@@ -61,19 +61,21 @@ public class User extends IdCreatedUpdated {
       List<AuthorityEnum> authorities,
       Operator operator) {
     Instant now = Instant.now();
-    this.loginId = loginId;
-    this.password = PasswordUtil.getPasswordHash(password);
-    this.name = name;
-    this.useFlag = useFlag;
-    this.authorities = authorities;
-    this.joinedAt = now;
-    this.additionalInfo = Map.of();
-    this.removedFlag = false;
-    this.setCreatedBy(operator, now);
-    this.setUpdatedBy(operator, now);
+    User user = new User();
+    user.loginId = loginId;
+    user.password = PasswordUtil.getPasswordHash(password);
+    user.name = name;
+    user.useFlag = useFlag;
+    user.authorities = authorities;
+    user.joinedAt = now;
+    user.additionalInfo = Map.of();
+    user.removedFlag = false;
+    user.setCreatedBy(operator, now);
+    user.setUpdatedBy(operator, now);
+    return user;
   }
 
-  public static User fromOperator(Operator operator) {
+  public static User of(Operator operator) {
     User user = new User();
     user.setId(operator.getId());
     user.setLoginId(operator.getLoginId());

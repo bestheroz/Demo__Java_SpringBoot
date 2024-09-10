@@ -18,7 +18,7 @@ public class NoticeCreateDto {
     private Boolean useFlag;
 
     public Notice toEntity(Operator operator) {
-      return new Notice(this.title, this.content, this.useFlag, operator);
+      return Notice.of(this.title, this.content, this.useFlag, operator);
     }
   }
 }

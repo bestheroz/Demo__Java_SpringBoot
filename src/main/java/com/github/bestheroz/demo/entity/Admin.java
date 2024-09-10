@@ -60,7 +60,7 @@ public class Admin extends IdCreatedUpdated {
     return this.managerFlag ? List.of(AuthorityEnum.values()) : this.authorities;
   }
 
-  public Admin(
+  public static Admin of(
       String loginId,
       String password,
       String name,
@@ -69,19 +69,21 @@ public class Admin extends IdCreatedUpdated {
       List<AuthorityEnum> authorities,
       Operator operator) {
     Instant now = Instant.now();
-    this.loginId = loginId;
-    this.password = PasswordUtil.getPasswordHash(password);
-    this.name = name;
-    this.useFlag = useFlag;
-    this.managerFlag = managerFlag;
-    this.authorities = authorities;
-    this.joinedAt = now;
-    this.removedFlag = false;
-    this.setCreatedBy(operator, now);
-    this.setUpdatedBy(operator, now);
+    Admin admin = new Admin();
+    admin.loginId = loginId;
+    admin.password = PasswordUtil.getPasswordHash(password);
+    admin.name = name;
+    admin.useFlag = useFlag;
+    admin.managerFlag = managerFlag;
+    admin.authorities = authorities;
+    admin.joinedAt = now;
+    admin.removedFlag = false;
+    admin.setCreatedBy(operator, now);
+    admin.setUpdatedBy(operator, now);
+    return admin;
   }
 
-  public static Admin fromOperator(Operator operator) {
+  public static Admin of(Operator operator) {
     Admin admin = new Admin();
     admin.setId(operator.getId());
     admin.setLoginId(operator.getLoginId());

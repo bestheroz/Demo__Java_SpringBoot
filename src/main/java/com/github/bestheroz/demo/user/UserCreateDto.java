@@ -29,7 +29,7 @@ public class UserCreateDto {
     private List<AuthorityEnum> authorities;
 
     public User toEntity(Operator operator) {
-      return new User(
+      return User.of(
           this.loginId, this.password, this.name, this.useFlag, this.authorities, operator);
     }
   }

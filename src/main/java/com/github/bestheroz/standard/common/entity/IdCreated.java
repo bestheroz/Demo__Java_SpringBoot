@@ -46,10 +46,10 @@ public class IdCreated {
   public void setCreatedBy(Operator operator, Instant instant) {
     if (operator.getType().equals(UserTypeEnum.ADMIN)) {
       this.createdObjectType = UserTypeEnum.ADMIN;
-      this.createdByAdmin = Admin.fromOperator(operator);
+      this.createdByAdmin = Admin.of(operator);
     } else if (operator.getType().equals(UserTypeEnum.USER)) {
       this.createdObjectType = UserTypeEnum.USER;
-      this.createdByUser = User.fromOperator(operator);
+      this.createdByUser = User.of(operator);
     }
     this.setCreatedAt(instant);
     this.setCreatedObjectId(operator.getId());

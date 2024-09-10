@@ -29,7 +29,7 @@ public class AdminCreateDto {
     private List<AuthorityEnum> authorities;
 
     public Admin toEntity(Operator operator) {
-      return new Admin(
+      return Admin.of(
           this.loginId,
           this.password,
           this.name,

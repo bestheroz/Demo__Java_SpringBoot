@@ -42,10 +42,10 @@ public class IdCreatedUpdated extends IdCreated {
   public void setUpdatedBy(Operator operator, Instant instant) {
     if (operator.getType().equals(UserTypeEnum.ADMIN)) {
       this.updatedObjectType = UserTypeEnum.ADMIN;
-      this.updatedByAdmin = Admin.fromOperator(operator);
+      this.updatedByAdmin = Admin.of(operator);
     } else if (operator.getType().equals(UserTypeEnum.USER)) {
       this.updatedObjectType = UserTypeEnum.USER;
-      this.updatedByUser = User.fromOperator(operator);
+      this.updatedByUser = User.of(operator);
     }
     this.setUpdatedAt(instant);
     this.setUpdatedObjectId(operator.getId());

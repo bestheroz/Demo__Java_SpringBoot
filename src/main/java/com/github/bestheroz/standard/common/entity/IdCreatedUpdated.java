@@ -54,8 +54,8 @@ public class IdCreatedUpdated extends IdCreated {
 
   public UserSimpleDto getUpdatedBy() {
     return switch (this.updatedObjectType) {
-      case ADMIN -> UserSimpleDto.fromEntity(this.updatedByAdmin);
-      case USER -> UserSimpleDto.fromEntity(this.updatedByUser);
+      case ADMIN -> UserSimpleDto.of(this.updatedByAdmin);
+      case USER -> UserSimpleDto.of(this.updatedByUser);
     };
   }
 }

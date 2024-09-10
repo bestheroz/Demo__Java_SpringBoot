@@ -30,7 +30,7 @@ public class NoticeDto {
     @Schema(description = "사용 여부", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean useFlag;
 
-    public static Response fromEntity(Notice notice) {
+    public static Response of(Notice notice) {
       final Response response = new Response();
       response.setId(notice.getId());
       response.setTitle(notice.getTitle());

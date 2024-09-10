@@ -22,12 +22,12 @@ public class UserSimpleDto {
   @Schema(description = "관리자 이름 or 유저 이름", requiredMode = Schema.RequiredMode.REQUIRED)
   private String name;
 
-  public static UserSimpleDto fromEntity(Admin entity) {
+  public static UserSimpleDto of(Admin entity) {
     return new UserSimpleDto(
         entity.getId(), entity.getType(), entity.getLoginId(), entity.getName());
   }
 
-  public static UserSimpleDto fromEntity(User entity) {
+  public static UserSimpleDto of(User entity) {
     return new UserSimpleDto(
         entity.getId(), entity.getType(), entity.getLoginId(), entity.getName());
   }

@@ -39,7 +39,7 @@ public class AdminDto {
     @Schema(description = "권한 목록", requiredMode = Schema.RequiredMode.REQUIRED)
     private List<AuthorityEnum> authorities;
 
-    @Schema(description = "가입 일시", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "가입 일시", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Instant joinedAt;
 
     @Schema(description = "최근 활동 일시", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
@@ -48,7 +48,7 @@ public class AdminDto {
     @Schema(description = "비밀번호 변경 일시", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Instant changePasswordAt;
 
-    public static Response fromEntity(Admin admin) {
+    public static Response of(Admin admin) {
       final Response response = new Response();
       response.setId(admin.getId());
       response.setLoginId(admin.getLoginId());

@@ -58,8 +58,8 @@ public class IdCreated {
 
   public UserSimpleDto getCreatedBy() {
     return switch (this.createdObjectType) {
-      case ADMIN -> UserSimpleDto.fromEntity(this.createdByAdmin);
-      case USER -> UserSimpleDto.fromEntity(this.createdByUser);
+      case ADMIN -> UserSimpleDto.of(this.createdByAdmin);
+      case USER -> UserSimpleDto.of(this.createdByUser);
     };
   }
 }

@@ -33,14 +33,14 @@ public class UserService {
             .findAllByRemovedFlagIsFalse(
                 PageRequest.of(
                     request.getPage() - 1, request.getPageSize(), Sort.by("id").descending()))
-            .map(UserDto.Response::fromEntity));
+            .map(UserDto.Response::of));
   }
 
   @Transactional(readOnly = true)
   public UserDto.Response getUser(final Long id) {
     return this.userRepository
         .findById(id)
-        .map(UserDto.Response::fromEntity)
+        .map(UserDto.Response::of)
         .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_USER));
   }
 
@@ -49,7 +49,7 @@ public class UserService {
       throw new RequestException400(ExceptionCode.ALREADY_JOINED_ACCOUNT);
     }
 
-    return UserDto.Response.fromEntity(this.userRepository.save(request.toEntity(operator)));
+    return UserDto.Response.of(this.userRepository.save(request.toEntity(operator)));
   }
 
   public UserDto.Response updateUser(
@@ -73,7 +73,7 @@ public class UserService {
         request.getUseFlag(),
         request.getAuthorities(),
         operator);
-    return UserDto.Response.fromEntity(user);
+    return UserDto.Response.of(user);
   }
 
   public void deleteUser(final Long id, Operator operator) {
@@ -105,7 +105,7 @@ public class UserService {
     }
 
     user.changePassword(request.getNewPassword(), operator);
-    return UserDto.Response.fromEntity(user);
+    return UserDto.Response.of(user);
   }
 
   public TokenDto loginUser(UserLoginDto.Request request) {

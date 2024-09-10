@@ -33,14 +33,14 @@ public class AdminService {
             .findAllByRemovedFlagIsFalse(
                 PageRequest.of(
                     request.getPage() - 1, request.getPageSize(), Sort.by("id").descending()))
-            .map(AdminDto.Response::fromEntity));
+            .map(AdminDto.Response::of));
   }
 
   @Transactional(readOnly = true)
   public AdminDto.Response getAdmin(final Long id) {
     return this.adminRepository
         .findById(id)
-        .map(AdminDto.Response::fromEntity)
+        .map(AdminDto.Response::of)
         .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_ADMIN));
   }
 
@@ -49,7 +49,7 @@ public class AdminService {
       throw new RequestException400(ExceptionCode.ALREADY_JOINED_ACCOUNT);
     }
 
-    return AdminDto.Response.fromEntity(this.adminRepository.save(request.toEntity(operator)));
+    return AdminDto.Response.of(this.adminRepository.save(request.toEntity(operator)));
   }
 
   public AdminDto.Response updateAdmin(
@@ -80,7 +80,7 @@ public class AdminService {
         request.getManagerFlag(),
         request.getAuthorities(),
         operator);
-    return AdminDto.Response.fromEntity(admin);
+    return AdminDto.Response.of(admin);
   }
 
   public void deleteAdmin(final Long id, Operator operator) {
@@ -112,7 +112,7 @@ public class AdminService {
     }
 
     admin.changePassword(request.getNewPassword(), operator);
-    return AdminDto.Response.fromEntity(admin);
+    return AdminDto.Response.of(admin);
   }
 
   public TokenDto loginAdmin(AdminLoginDto.Request request) {

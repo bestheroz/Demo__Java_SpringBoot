@@ -24,24 +24,24 @@ public class NoticeService {
             .findAllByRemovedFlagIsFalse(
                 PageRequest.of(
                     request.getPage() - 1, request.getPageSize(), Sort.by("id").descending()))
-            .map(NoticeDto.Response::fromEntity));
+            .map(NoticeDto.Response::of));
   }
 
   @Transactional(readOnly = true)
   public NoticeDto.Response getNotice(Long id) {
     return noticeRepository
         .findById(id)
-        .map(NoticeDto.Response::fromEntity)
+        .map(NoticeDto.Response::of)
         .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_NOTICE));
   }
 
   public NoticeDto.Response createNotice(NoticeCreateDto.Request request, Operator operator) {
-    return NoticeDto.Response.fromEntity(noticeRepository.save(request.toEntity(operator)));
+    return NoticeDto.Response.of(noticeRepository.save(request.toEntity(operator)));
   }
 
   public NoticeDto.Response updateNotice(
       Long id, NoticeCreateDto.Request request, Operator operator) {
-    return NoticeDto.Response.fromEntity(
+    return NoticeDto.Response.of(
         noticeRepository
             .findById(id)
             .map(

@@ -70,13 +70,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       String token = jwtTokenProvider.resolveAccessToken(request);
       if (token == null) {
         log.info("No access token found");
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No access token found");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         return;
       }
 
       if (!jwtTokenProvider.validateToken(token)) {
         log.info("Invalid access token - refresh token required");
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid access token");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         return;
       }
 

@@ -34,8 +34,8 @@ public class UserController {
   @Operation(summary = "로그인 아이디 중복 확인")
   public boolean checkLoginId(
       @Schema(description = "로그인 아이디") @RequestParam String loginId,
-      @Schema(description = "유저 ID") @RequestParam(required = false) Long id) {
-    return userService.checkLoginId(loginId, id);
+      @Schema(description = "유저 ID") @RequestParam(required = false) Long userId) {
+    return userService.checkLoginId(loginId, userId);
   }
 
   @PostMapping("login")

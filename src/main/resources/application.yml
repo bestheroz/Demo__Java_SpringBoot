@@ -56,9 +56,9 @@ spring:
     activate:
       on-profile: local
   datasource:
-    url: jdbc:mysql://database-1.cdomw0u4mc2w.ap-northeast-2.rds.amazonaws.com:3306/demo?useSSL=false&serverTimezone=UTC
-    username: demo
-    password: demo!%$@
+    url: jdbc:mysql://stkim.ddns.net:3306/studydb?useSSL=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
+    username: studydb
+    password: studydb%#123
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 3

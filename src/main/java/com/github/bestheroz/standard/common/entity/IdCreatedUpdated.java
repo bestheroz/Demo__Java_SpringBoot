@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JoinColumnOrFormula;
+import org.hibernate.annotations.JoinFormula;
 
 @Getter
 @Setter
@@ -24,32 +26,31 @@ public class IdCreatedUpdated extends IdCreated {
   private Long updatedObjectId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(
-      name = "updated_object_id",
-      referencedColumnName = "id",
-      insertable = false,
-      updatable = false)
+  @JoinColumnOrFormula(
+      formula =
+          @JoinFormula(
+              value =
+                  "CASE WHEN updated_object_type = 'admin' THEN updated_object_id ELSE null END",
+              referencedColumnName = "id"))
   private Admin updatedByAdmin;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(
-      name = "updated_object_id",
-      referencedColumnName = "id",
-      insertable = false,
-      updatable = false)
+  @JoinColumnOrFormula(
+      formula =
+          @JoinFormula(
+              value = "CASE WHEN updated_object_type = 'user' THEN updated_object_id ELSE null END",
+              referencedColumnName = "id"))
   private User updatedByUser;
 
   public void setUpdatedBy(Operator operator, Instant instant) {
+    this.updatedAt = instant;
+    this.updatedObjectId = operator.getId();
+    this.updatedObjectType = operator.getType();
     if (operator.getType().equals(UserTypeEnum.ADMIN)) {
-      this.updatedObjectType = UserTypeEnum.ADMIN;
       this.updatedByAdmin = Admin.of(operator);
     } else if (operator.getType().equals(UserTypeEnum.USER)) {
-      this.updatedObjectType = UserTypeEnum.USER;
       this.updatedByUser = User.of(operator);
     }
-    this.setUpdatedAt(instant);
-    this.setUpdatedObjectId(operator.getId());
-    this.setUpdatedObjectType(operator.getType());
   }
 
   public UserSimpleDto getUpdatedBy() {

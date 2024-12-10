@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JoinColumnOrFormula;
+import org.hibernate.annotations.JoinFormula;
 
 @Getter
 @Setter
@@ -28,32 +30,31 @@ public class IdCreated {
   private Long createdObjectId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(
-      name = "created_object_id",
-      referencedColumnName = "id",
-      insertable = false,
-      updatable = false)
+  @JoinColumnOrFormula(
+      formula =
+          @JoinFormula(
+              value =
+                  "CASE WHEN created_object_type = 'admin' THEN created_object_id ELSE null END",
+              referencedColumnName = "id"))
   private Admin createdByAdmin;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(
-      name = "created_object_id",
-      referencedColumnName = "id",
-      insertable = false,
-      updatable = false)
+  @JoinColumnOrFormula(
+      formula =
+          @JoinFormula(
+              value = "CASE WHEN created_object_type = 'user' THEN created_object_id ELSE null END",
+              referencedColumnName = "id"))
   private User createdByUser;
 
   public void setCreatedBy(Operator operator, Instant instant) {
+    this.createdAt = instant;
+    this.createdObjectId = operator.getId();
+    this.createdObjectType = operator.getType();
     if (operator.getType().equals(UserTypeEnum.ADMIN)) {
-      this.createdObjectType = UserTypeEnum.ADMIN;
       this.createdByAdmin = Admin.of(operator);
     } else if (operator.getType().equals(UserTypeEnum.USER)) {
-      this.createdObjectType = UserTypeEnum.USER;
       this.createdByUser = User.of(operator);
     }
-    this.setCreatedAt(instant);
-    this.setCreatedObjectId(operator.getId());
-    this.setCreatedObjectType(operator.getType());
   }
 
   public UserSimpleDto getCreatedBy() {

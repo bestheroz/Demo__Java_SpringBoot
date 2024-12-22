@@ -15,15 +15,9 @@ spring:
           time_zone: UTC
         default_batch_fetch_size: 1000
     open-in-view: false
-  datasource:
-    driver-class-name: com.amazonaws.secretsmanager.sql.AWSSecretsManagerMySQLDriver
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
-  cloud:
-    aws:
-      region:
-        static: ap-northeast-2
 server:
   port: 8000
   compression:

@@ -22,7 +22,7 @@ public class GenericEnumConverter<T extends Enum<T>> implements AttributeConvert
     if (attribute == null) {
       return null;
     }
-    return attribute.name().toLowerCase();
+    return attribute.name();
   }
 
   @Override
@@ -31,7 +31,7 @@ public class GenericEnumConverter<T extends Enum<T>> implements AttributeConvert
       return null;
     }
     return Stream.of(enumClass.getEnumConstants())
-        .filter(e -> e.name().toLowerCase().equals(dbData))
+        .filter(e -> e.name().equals(dbData))
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("Unknown enum value: " + dbData));
   }

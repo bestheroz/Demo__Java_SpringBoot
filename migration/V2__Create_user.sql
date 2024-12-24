@@ -35,5 +35,5 @@ authorities, removed_flag, additional_info,
 created_at, created_object_id, created_object_type, updated_at, updated_object_id, updated_object_type)
 values (1, '개발자(User)', 1, 'developer', '$2b$12$HbX5j99YnnKs8zWC/LokB.kyujREbh.kQ9sTNacD/hbEfm8eIP7lm',
 '["NOTICE_VIEW"]', 0, '{}',
- now(), 1, 'admin', now(), 1, 'admin');
+ now(), 1, 'ADMIN', now(), 1, 'ADMIN');
 

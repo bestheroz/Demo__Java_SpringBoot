@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import lombok.*;
 
-@Entity
+@Entity(name = "notices")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -30,7 +30,7 @@ public class IdCreatedUpdated extends IdCreated {
       formula =
           @JoinFormula(
               value =
-                  "CASE WHEN updated_object_type = 'admin' THEN updated_object_id ELSE null END",
+                  "CASE WHEN updated_object_type = 'ADMIN' THEN updated_object_id ELSE null END",
               referencedColumnName = "id"))
   private Admin updatedByAdmin;
 
@@ -38,7 +38,7 @@ public class IdCreatedUpdated extends IdCreated {
   @JoinColumnOrFormula(
       formula =
           @JoinFormula(
-              value = "CASE WHEN updated_object_type = 'user' THEN updated_object_id ELSE null END",
+              value = "CASE WHEN updated_object_type = 'USER' THEN updated_object_id ELSE null END",
               referencedColumnName = "id"))
   private User updatedByUser;
 

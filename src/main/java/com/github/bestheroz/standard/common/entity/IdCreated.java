@@ -34,7 +34,7 @@ public class IdCreated {
       formula =
           @JoinFormula(
               value =
-                  "CASE WHEN created_object_type = 'admin' THEN created_object_id ELSE null END",
+                  "CASE WHEN created_object_type = 'ADMIN' THEN created_object_id ELSE null END",
               referencedColumnName = "id"))
   private Admin createdByAdmin;
 
@@ -42,7 +42,7 @@ public class IdCreated {
   @JoinColumnOrFormula(
       formula =
           @JoinFormula(
-              value = "CASE WHEN created_object_type = 'user' THEN created_object_id ELSE null END",
+              value = "CASE WHEN created_object_type = 'USER' THEN created_object_id ELSE null END",
               referencedColumnName = "id"))
   private User createdByUser;
 

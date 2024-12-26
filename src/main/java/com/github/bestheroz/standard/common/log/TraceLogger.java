@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 @Slf4j
 @Aspect
@@ -31,38 +31,38 @@ public class TraceLogger {
         StringUtils.remove(
             pjp.getStaticPart().getSignature().toString(),
             pjp.getStaticPart().getSignature().getDeclaringType().getPackageName().concat("."));
-    final StopWatch stopWatch = new StopWatch();
+
+    if (StringUtils.containsAny(signature, "HealthController", "HealthRepository")) {
+      return pjp.proceed();
+    }
+
+    final StopWatch stopWatch = new StopWatch(signature);
     stopWatch.start();
+
     try {
-      if (!StringUtils.containsAny(signature, "HealthController", "HealthRepository")) {
-        log.info(STR_START_EXECUTE_TIME, signature);
-      }
+      log.info(STR_START_EXECUTE_TIME, signature);
 
       retVal = pjp.proceed();
 
       stopWatch.stop();
       if (StringUtils.containsAny(signature, "Repository.", "RepositoryCustom.", ".domain.")) {
-        if (!StringUtils.contains(signature, "HealthRepository")) {
-          log.info(STR_END_EXECUTE_TIME_FOR_REPOSITORY, signature, stopWatch.getTime());
-        }
+        log.info(STR_END_EXECUTE_TIME_FOR_REPOSITORY, signature, stopWatch.getTotalTimeSeconds());
       } else {
-        if (!StringUtils.contains(signature, "HealthController")) {
-          final String str = objectMapper.writeValueAsString(retVal);
-          log.info(
-              STR_END_EXECUTE_TIME,
-              signature,
-              stopWatch.getTime(),
-              StringUtils.abbreviate(
-                  StringUtils.defaultString(str, "null"),
-                  "--skip massive text-- total length : " + StringUtils.length(str),
-                  1000));
-        }
+        final String str = objectMapper.writeValueAsString(retVal);
+        log.info(
+            STR_END_EXECUTE_TIME,
+            signature,
+            stopWatch.getTotalTimeSeconds(),
+            StringUtils.abbreviate(
+                StringUtils.defaultString(str, "null"),
+                "--skip massive text-- total length : " + StringUtils.length(str),
+                1000));
       }
     } catch (final Throwable e) {
-      if (stopWatch.isStarted()) {
+      if (stopWatch.isRunning()) {
         stopWatch.stop();
       }
-      log.info(STR_END_EXECUTE_TIME_FOR_EXCEPTION, signature, stopWatch.getTime());
+      log.info(STR_END_EXECUTE_TIME_FOR_EXCEPTION, signature, stopWatch.getTotalTimeSeconds());
       throw e;
     }
     return retVal;

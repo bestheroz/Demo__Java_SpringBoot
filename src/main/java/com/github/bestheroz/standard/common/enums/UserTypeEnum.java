@@ -1,6 +1,6 @@
 package com.github.bestheroz.standard.common.enums;
 
-import com.github.bestheroz.standard.common.entity.converter.GenericEnumConverter;
+import com.github.bestheroz.standard.common.domain.converter.GenericEnumConverter;
 import jakarta.persistence.Converter;
 import lombok.Getter;
 

@@ -29,13 +29,12 @@ jobs:
           echo "TAG_NAME: $TAG_NAME"
           echo "REF_BRANCH: $REF_BRANCH"
           echo "ECR_URI: $ECR_URI"
-          echo "ECR_URI: $ECR_URI"
 
-          echo "::set-output name=TARGET_PATH::$(echo $TARGET_PATH)"
-          echo "::set-output name=PROFILE::$(echo $PROFILE)"
-          echo "::set-output name=TAG_NAME::$(echo $TAG_NAME)"
-          echo "::set-output name=REF_BRANCH::$(echo $REF_BRANCH)"
-          echo "::set-output name=ECR_URI::$(echo $ECR_URI)"
+          echo "TARGET_PATH=${TARGET_PATH}" >> $GITHUB_OUTPUT
+          echo "PROFILE=${PROFILE}" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
+          echo "REF_BRANCH=${REF_BRANCH}" >> $GITHUB_OUTPUT
+          echo "ECR_URI=${ECR_URI}" >> $GITHUB_OUTPUT
 
       - name: Set up JDK 21
         uses: actions/setup-java@main
@@ -68,16 +67,16 @@ jobs:
           docker build -t $ECR_URI:$TAG_NAME .
           docker push $ECR_URI:$TAG_NAME
 
-
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@main
         with:
           token: ${{ secrets.WORKFLOW_GITHUB_TOKEN }}
           repository:
           event-type: edit-kustomize
-          client-payload: '{
-            "dockerImg":"${{steps.set-envs.outputs.ECR_URI}}:${{steps.set-envs.outputs.TAG_NAME}}",
-            "refBranch":"${{ steps.set-envs.outputs.REF_BRANCH }}",
-            "tagName":"${{ steps.set-envs.outputs.TAG_NAME }}",
-            "targetPath":"${{ steps.set-envs.outputs.TARGET_PATH }}"
-          }'
+          client-payload: |
+            {
+              "dockerImg":"${{steps.set-envs.outputs.ECR_URI}}:${{steps.set-envs.outputs.TAG_NAME}}",
+              "refBranch":"${{ steps.set-envs.outputs.REF_BRANCH }}",
+              "tagName":"${{ steps.set-envs.outputs.TAG_NAME }}",
+              "targetPath":"${{ steps.set-envs.outputs.TARGET_PATH }}"
+            }

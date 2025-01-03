@@ -43,11 +43,11 @@ jobs:
           distribution: 'corretto'
           java-version: '21'
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@main
+
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@main
-        with:
-          gradle-version: wrapper
-          arguments: assemble --no-daemon -Dspring.profiles.active=${{ steps.set-envs.outputs.PROFILE }}  -x test
+        run: ./gradlew assemble --no-daemon -Dspring.profiles.active=${{ steps.set-envs.outputs.PROFILE }}  -x test
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master

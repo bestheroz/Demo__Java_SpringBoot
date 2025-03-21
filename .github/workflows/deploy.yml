@@ -74,7 +74,7 @@ jobs:
         uses: peter-evans/repository-dispatch@main
         with:
           token: ${{ secrets.WORKFLOW_GITHUB_TOKEN }}
-          repository:
+          repository: bestheroz/Demo__EKS
           event-type: edit-kustomize
           client-payload: |
             {

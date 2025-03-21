@@ -2,7 +2,7 @@ name: test
 on:
   push:
     branches-ignore: [ sandbox, qa ]
-    tags-ignore: '**'
+    tags-ignore: ['**']
 jobs:
   build-test:
     runs-on: ubuntu-latest

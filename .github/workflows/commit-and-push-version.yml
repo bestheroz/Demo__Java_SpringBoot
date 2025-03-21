@@ -27,16 +27,16 @@ jobs:
         with:
           find: 'version = "(.+?)"'
           replace: 'version = "${{ steps.tag.outputs.tag }}"'
-          include: "build.gradle.kts"
+          include: "build.gradle"
           regex: true
 
       - name: 변경사항 확인
         run: |
           echo "업데이트된 버전 정보:"
-          grep "version =" build.gradle.kts
+          grep "version =" build.gradle
 
       - name: 변경사항 커밋 및 푸시
         uses: stefanzweifel/git-auto-commit-action@master
         with:
-          commit_message: "⬆️ 버전 업데이트 (build.gradle.kts) v${{ steps.tag.outputs.tag }}"
+          commit_message: "⬆️ 버전 업데이트 (build.gradle) v${{ steps.tag.outputs.tag }}"
           branch: main

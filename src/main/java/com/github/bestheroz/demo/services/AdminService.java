@@ -104,7 +104,7 @@ public class AdminService {
             .findById(id)
             .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_ADMIN));
     if (admin.getRemovedFlag()) throw new RequestException400(ExceptionCode.UNKNOWN_ADMIN);
-    if (!PasswordUtil.verifyPassword(request.getOldPassword(), admin.getPassword())) {
+    if (!PasswordUtil.isPasswordValid(request.getOldPassword(), admin.getPassword())) {
       log.warn("password not match");
       throw new RequestException400(ExceptionCode.UNKNOWN_ADMIN);
     }
@@ -124,7 +124,7 @@ public class AdminService {
     if (!admin.getUseFlag()) {
       throw new RequestException400(ExceptionCode.UNKNOWN_ADMIN);
     }
-    if (!PasswordUtil.verifyPassword(request.getPassword(), admin.getPassword())) {
+    if (!PasswordUtil.isPasswordValid(request.getPassword(), admin.getPassword())) {
       log.warn("password not match");
       throw new RequestException400(ExceptionCode.UNKNOWN_ADMIN);
     }

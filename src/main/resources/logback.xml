@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration>
 <configuration>
-<!--  <springProfile name="sandbox, qa, prod">-->
-<!--    <appender name="SENTRY" class="io.sentry.logback.SentryAppender"/>-->
-<!--  </springProfile>-->
+  <property name="CONSOLE_LOG_PATTERN"
+            value="%d{HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %-75.75cyan(%c{1}.%M\(%L\)) %m%n"/>
+  <property name="SERVER_LOG_PATTERN"
+            value="%d{HH:mm:ss.SSS} %-5level [%t] %-75.75(%c{1}.%M\(%L\)) %m%n"/>
+
+  <springProfile name="sandbox, qa, prod">
+    <appender name="SENTRY" class="io.sentry.logback.SentryAppender"/>
+  </springProfile>
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-<!--    <springProfile name="local">-->
+    <springProfile name="local">
       <encoder>
-        <pattern>
-          <!-- @formatter:off -->%d{HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %-75.75cyan(%c{1}.%M\(%L\)) %m%n<!-- @formatter:on -->
-        </pattern>
+        <pattern>${CONSOLE_LOG_PATTERN}</pattern>
       </encoder>
-<!--    </springProfile>-->
-<!--    <springProfile name="sandbox, qa, prod">-->
-<!--      <encoder>-->
-<!--        <pattern>-->
-<!--           @formatter:off [%t] %-75.75(%c{1}.%M\(%L\)) %m%n @formatter:on -->
-<!--        </pattern>-->
-<!--      </encoder>-->
-<!--    </springProfile>-->
+    </springProfile>
+    <springProfile name="sandbox, qa, prod">
+      <encoder>
+        <pattern>${SERVER_LOG_PATTERN}</pattern>
+      </encoder>
+    </springProfile>
   </appender>
 
   <logger name="org.springframework" level="INFO"/>
@@ -45,10 +46,15 @@
   <logger name="com.amazonaws" level="INFO"/>
 
 
-  <root level="DEBUG">
-<!--    <springProfile name="sandbox, qa, prod">-->
-<!--      <appender-ref ref="SENTRY"/>-->
-<!--    </springProfile>-->
-    <appender-ref ref="CONSOLE"/>
-  </root>
+  <springProfile name="sandbox, qa, prod">
+    <root level="DEBUG">
+      <appender-ref ref="SENTRY"/>
+      <appender-ref ref="CONSOLE"/>
+    </root>
+  </springProfile>
+  <springProfile name="local">
+    <root level="DEBUG">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+  </springProfile>
 </configuration>

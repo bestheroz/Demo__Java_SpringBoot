@@ -1,7 +1,6 @@
 package com.github.bestheroz.standard.common.authenticate;
 
-import static com.github.bestheroz.standard.config.SecurityConfig.GET_PUBLIC;
-import static com.github.bestheroz.standard.config.SecurityConfig.POST_PUBLIC;
+import static com.github.bestheroz.standard.config.SecurityConfig.*;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -37,6 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       Arrays.stream(GET_PUBLIC).map(AntPathRequestMatcher::new).toList();
   private final List<AntPathRequestMatcher> publicPostPaths =
       Arrays.stream(POST_PUBLIC).map(AntPathRequestMatcher::new).toList();
+  private final List<AntPathRequestMatcher> publicDeletePaths =
+      Arrays.stream(DELETE_PUBLIC).map(AntPathRequestMatcher::new).toList();
 
   @Override
   protected void doFilterInternal(
@@ -100,6 +101,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       return publicGetPaths.stream().anyMatch(matcher -> matcher.matches(request));
     } else if (request.getMethod().equals(HttpMethod.POST.toString())) {
       return publicPostPaths.stream().anyMatch(matcher -> matcher.matches(request));
+    } else if (request.getMethod().equals(HttpMethod.DELETE.toString())) {
+      return publicDeletePaths.stream().anyMatch(matcher -> matcher.matches(request));
     } else {
       return false;
     }

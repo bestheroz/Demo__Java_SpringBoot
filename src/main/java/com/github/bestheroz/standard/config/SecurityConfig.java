@@ -43,6 +43,10 @@ public class SecurityConfig {
       new String[] {
         "/api/v1/admins/login", "/api/v1/users/login",
       };
+  public static final String[] DELETE_PUBLIC =
+      new String[] {
+        "/api/v1/admins/logout", "/api/v1/users/logout",
+      };
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -55,6 +59,8 @@ public class SecurityConfig {
                 auth.requestMatchers(HttpMethod.GET, GET_PUBLIC)
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, POST_PUBLIC)
+                    .permitAll()
+                    .requestMatchers(HttpMethod.DELETE, DELETE_PUBLIC)
                     .permitAll()
                     .anyRequest()
                     .authenticated())

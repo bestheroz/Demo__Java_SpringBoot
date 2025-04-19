@@ -102,6 +102,15 @@ public class ApiExceptionHandler {
   }
 
   @ExceptionHandler({
+    MissingServletRequestParameterException.class,
+  })
+  public ResponseEntity<ApiResult<?>> missingServletRequestParameterException(
+      final MissingServletRequestParameterException e) {
+    log.warn(LogUtils.getStackTrace(e));
+    return ResponseEntity.badRequest().build();
+  }
+
+  @ExceptionHandler({
     HttpMediaTypeNotAcceptableException.class,
     HttpMediaTypeNotSupportedException.class,
     HttpRequestMethodNotSupportedException.class,

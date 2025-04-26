@@ -1,7 +1,8 @@
 name: push-version
 on:
   push:
-    tags: ['^[0-9]+\.[0-9]+\.[0-9]+$']
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
 permissions:
   contents: write  # 레포지토리 내용 수정 권한 추가
 env:

@@ -17,8 +17,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.UrlPathHelper;
 
@@ -32,12 +32,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private static final String REQUEST_PARAMETERS = "<{}>{}?{}";
 
   private final JwtTokenProvider jwtTokenProvider;
-  private final List<AntPathRequestMatcher> publicGetPaths =
-      Arrays.stream(GET_PUBLIC).map(AntPathRequestMatcher::new).toList();
-  private final List<AntPathRequestMatcher> publicPostPaths =
-      Arrays.stream(POST_PUBLIC).map(AntPathRequestMatcher::new).toList();
-  private final List<AntPathRequestMatcher> publicDeletePaths =
-      Arrays.stream(DELETE_PUBLIC).map(AntPathRequestMatcher::new).toList();
+  private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
+  // SecurityConfig에서 정의된 문자열 배열(GET_PUBLIC, POST_PUBLIC, DELETE_PUBLIC)을 그대로 사용
+  private final List<String> publicGetPaths = Arrays.asList(GET_PUBLIC);
+  private final List<String> publicPostPaths = Arrays.asList(POST_PUBLIC);
+  private final List<String> publicDeletePaths = Arrays.asList(DELETE_PUBLIC);
 
   @Override
   protected void doFilterInternal(
@@ -46,11 +46,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     String requestURI = new UrlPathHelper().getPathWithinApplication(request);
 
+    // 루트 경로에 대해 404 처리
     if (requestURI.equals("/")) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
 
+    // 헬스체크 엔드포인트가 아닌 경우만 로그 출력
     if (!requestURI.startsWith("/api/v1/health/")) {
       log.info(
           REQUEST_PARAMETERS,
@@ -63,11 +65,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     stopWatch.start();
 
     try {
-      if (isPublicPath(request)) {
+      // 퍼블릭 경로라면 토큰 검증 없이 다음 필터로 이동
+      if (isPublicPath(requestURI, request.getMethod())) {
         filterChain.doFilter(request, response);
         return;
       }
 
+      // 토큰 조회
       String token = jwtTokenProvider.resolveAccessToken(request);
       if (token == null) {
         log.info("No access token found");
@@ -75,12 +79,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return;
       }
 
+      // 토큰 유효성 검증
       if (!jwtTokenProvider.validateToken(token)) {
         log.info("Invalid access token - refresh token required");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         return;
       }
 
+      // 인증 정보 설정
       UserDetails userDetails = jwtTokenProvider.getOperator(token);
       SecurityContextHolder.getContext()
           .setAuthentication(
@@ -96,15 +102,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
   }
 
-  private boolean isPublicPath(HttpServletRequest request) {
-    if (request.getMethod().equals(HttpMethod.GET.toString())) {
-      return publicGetPaths.stream().anyMatch(matcher -> matcher.matches(request));
-    } else if (request.getMethod().equals(HttpMethod.POST.toString())) {
-      return publicPostPaths.stream().anyMatch(matcher -> matcher.matches(request));
-    } else if (request.getMethod().equals(HttpMethod.DELETE.toString())) {
-      return publicDeletePaths.stream().anyMatch(matcher -> matcher.matches(request));
-    } else {
-      return false;
+  private boolean isPublicPath(String requestURI, String httpMethod) {
+    if (HttpMethod.GET.matches(httpMethod)) {
+      return publicGetPaths.stream().anyMatch(pattern -> pathMatcher.match(pattern, requestURI));
+    } else if (HttpMethod.POST.matches(httpMethod)) {
+      return publicPostPaths.stream().anyMatch(pattern -> pathMatcher.match(pattern, requestURI));
+    } else if (HttpMethod.DELETE.matches(httpMethod)) {
+      return publicDeletePaths.stream().anyMatch(pattern -> pathMatcher.match(pattern, requestURI));
     }
+    return false;
   }
 }

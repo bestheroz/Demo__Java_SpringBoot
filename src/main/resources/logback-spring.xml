@@ -1,60 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE configuration>
 <configuration>
+  <!-- 공통 프로퍼티 정의 -->
   <property name="CONSOLE_LOG_PATTERN"
             value="%d{HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %-75.75cyan(%c{1}.%M\(%L\)) %m%n"/>
   <property name="SERVER_LOG_PATTERN"
             value="%d{HH:mm:ss.SSS} %-5level [%t] %-75.75(%c{1}.%M\(%L\)) %m%n"/>
 
-  <springProfile name="sandbox, qa, prod">
-    <appender name="SENTRY" class="io.sentry.logback.SentryAppender"/>
-  </springProfile>
-  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    <springProfile name="local">
+  <!-- 로컬 프로파일: CONSOLE만 -->
+  <springProfile name="local">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
       <encoder>
         <pattern>${CONSOLE_LOG_PATTERN}</pattern>
       </encoder>
-    </springProfile>
-    <springProfile name="sandbox, qa, prod">
+    </appender>
+
+    <root level="DEBUG">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+  </springProfile>
+
+  <!-- sandbox, qa, prod 프로파일: SENTRY + CONSOLE -->
+  <springProfile name="sandbox,qa,prod">
+    <appender name="SENTRY" class="io.sentry.logback.SentryAppender"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
       <encoder>
         <pattern>${SERVER_LOG_PATTERN}</pattern>
       </encoder>
-    </springProfile>
-  </appender>
+    </appender>
 
-  <logger name="org.springframework" level="INFO"/>
-  <logger
-    name="org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor"
-    level="INFO"/>
-  <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"
-    level="WARN"/>
-  <logger name="logging.level.org.springframework.web.filter" level="DEBUG"/>
-  <logger name="_org.springframework.web" level="INFO"/>
-  <logger name="org.flywaydb.core" level="INFO"/>
-
-  <logger name="org.apache.ibatis" level="INFO"/>
-  <logger name="org.apache.commons.beanutils" level="INFO"/>
-
-  <logger name="com.zaxxer.hikari" level="INFO"/>
-
-  <logger name="org.hibernate" level="INFO"/>
-  <logger name="org.hibernate.SQL.logStatement" level="DEBUG"/>
-
-  <logger name="io.swagger" level="INFO"/>
-
-  <logger name="org.apache.http" level="INFO"/>
-  <logger name="com.amazonaws" level="INFO"/>
-
-
-  <springProfile name="sandbox, qa, prod">
     <root level="DEBUG">
       <appender-ref ref="SENTRY"/>
       <appender-ref ref="CONSOLE"/>
     </root>
   </springProfile>
-  <springProfile name="local">
-    <root level="DEBUG">
-      <appender-ref ref="CONSOLE"/>
-    </root>
-  </springProfile>
+
+  <!-- 공통 logger 설정 -->
+  <logger name="org.springframework" level="INFO"/>
+  <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor"
+          level="INFO"/>
+  <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"
+          level="WARN"/>
+  <logger name="logging.level.org.springframework.web.filter" level="DEBUG"/>
+  <logger name="_org.springframework.web" level="INFO"/>
+  <logger name="org.flywaydb.core" level="INFO"/>
+  <logger name="org.apache.commons.beanutils" level="INFO"/>
+  <logger name="com.zaxxer.hikari" level="INFO"/>
+  <logger name="org.hibernate" level="INFO"/>
+  <logger name="org.hibernate.SQL.logStatement" level="DEBUG"/>
+  <logger name="io.swagger" level="INFO"/>
+  <logger name="org.apache.http" level="INFO"/>
+  <logger name="com.amazonaws" level="INFO"/>
+
 </configuration>

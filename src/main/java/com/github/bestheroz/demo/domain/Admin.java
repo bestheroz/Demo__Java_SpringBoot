@@ -19,9 +19,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity(name = "admins")
+@Entity(name = "admin")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DiscriminatorValue("admins")
+@DiscriminatorValue("admin")
 public class Admin extends IdCreatedUpdated {
   @Column(nullable = false)
   private String loginId;

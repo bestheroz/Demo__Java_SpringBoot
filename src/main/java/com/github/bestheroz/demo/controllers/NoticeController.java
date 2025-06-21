@@ -7,7 +7,6 @@ import com.github.bestheroz.standard.common.authenticate.CurrentUser;
 import com.github.bestheroz.standard.common.dto.ListResult;
 import com.github.bestheroz.standard.common.security.Operator;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,10 +23,8 @@ public class NoticeController {
   private final NoticeService noticeService;
 
   @GetMapping
-  public ListResult<NoticeDto.Response> getNoticeList(
-      @Schema(example = "1") @RequestParam Integer page,
-      @Schema(example = "10") @RequestParam Integer pageSize) {
-    return noticeService.getNoticeList(new NoticeDto.Request(page, pageSize));
+  public ListResult<NoticeDto.Response> getNoticeList(NoticeDto.Request request) {
+    return noticeService.getNoticeList(request);
   }
 
   @GetMapping("{id}")

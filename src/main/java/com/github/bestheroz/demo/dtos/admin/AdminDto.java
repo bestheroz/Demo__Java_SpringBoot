@@ -19,6 +19,21 @@ public class AdminDto {
 
     @Schema(description = "페이지 크기", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer pageSize;
+
+    @Schema(description = "ID(KEY)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Long id;
+
+    @Schema(description = "로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String loginId;
+
+    @Schema(description = "관리자 이름", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String name;
+
+    @Schema(description = "사용 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Boolean useFlag;
+
+    @Schema(description = "매니저 여부(모든 권한 소유)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Boolean managerFlag;
   }
 
   @Data

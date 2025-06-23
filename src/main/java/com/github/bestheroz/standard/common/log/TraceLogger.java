@@ -22,8 +22,11 @@ public class TraceLogger {
   private final ObjectMapper objectMapper;
 
   @Around(
-      "execution(!private * com.github.bestheroz..*Controller.*(..)) || execution(!private * com.github.bestheroz..*Service.*(..)) "
-          + "|| execution(!private * com.github.bestheroz..*Repository.*(..))")
+      """
+      execution(!private * com.github.bestheroz..*Controller.*(..)) ||
+      execution(!private * com.github.bestheroz..*Service.*(..)) ||
+      execution(!private * com.github.bestheroz..*Repository.*(..))
+      """)
   public Object writeLog(final ProceedingJoinPoint pjp) throws Throwable {
     final Object retVal;
 
@@ -45,7 +48,8 @@ public class TraceLogger {
       retVal = pjp.proceed();
 
       stopWatch.stop();
-      if (StringUtils.containsAny(signature, "Repository.", "RepositoryCustom.", ".domain.")) {
+      if (StringUtils.containsAny(
+          signature, "Repository.", "RepositoryCustom.", ".domain.", "SpecificationExecutor.")) {
         log.info(STR_END_EXECUTE_TIME_FOR_REPOSITORY, signature, stopWatch.getTotalTimeSeconds());
       } else {
         final String str = objectMapper.writeValueAsString(retVal);

@@ -26,10 +26,8 @@ public class UserController {
   @GetMapping
   @SecurityRequirement(name = "bearerAuth")
   @PreAuthorize("hasAuthority('USER_VIEW')")
-  public ListResult<UserDto.Response> getUserList(
-      @Schema(example = "1") @RequestParam Integer page,
-      @Schema(example = "10") @RequestParam Integer pageSize) {
-    return userService.getUserList(new UserDto.Request(page, pageSize));
+  public ListResult<UserDto.Response> getUserList(UserDto.Request request) {
+    return userService.getUserList(request);
   }
 
   @GetMapping("check-login-id")

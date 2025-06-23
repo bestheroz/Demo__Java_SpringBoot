@@ -26,10 +26,8 @@ public class AdminController {
   @GetMapping
   @SecurityRequirement(name = "bearerAuth")
   @PreAuthorize("hasAuthority('ADMIN_VIEW')")
-  public ListResult<AdminDto.Response> getAdminList(
-      @Schema(example = "1") @RequestParam Integer page,
-      @Schema(example = "10") @RequestParam Integer pageSize) {
-    return adminService.getAdminList(new AdminDto.Request(page, pageSize));
+  public ListResult<AdminDto.Response> getAdminList(AdminDto.Request request) {
+    return adminService.getAdminList(request);
   }
 
   @GetMapping("check-login-id")

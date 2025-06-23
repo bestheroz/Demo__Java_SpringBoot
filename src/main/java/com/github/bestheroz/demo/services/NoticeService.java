@@ -1,15 +1,21 @@
 package com.github.bestheroz.demo.services;
 
+import com.github.bestheroz.demo.domain.Notice;
 import com.github.bestheroz.demo.dtos.notice.NoticeCreateDto;
 import com.github.bestheroz.demo.dtos.notice.NoticeDto;
 import com.github.bestheroz.demo.repository.NoticeRepository;
+import com.github.bestheroz.demo.specification.NoticeSpecification;
 import com.github.bestheroz.standard.common.dto.ListResult;
 import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.exception.RequestException400;
 import com.github.bestheroz.standard.common.security.Operator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +27,26 @@ public class NoticeService {
 
   @Transactional(readOnly = true)
   public ListResult<NoticeDto.Response> getNoticeList(NoticeDto.Request request) {
+    List<Specification<Notice>> specs =
+        Stream.of(
+                NoticeSpecification.removedFlagIsFalse(),
+                request.getId() != null ? NoticeSpecification.equalId(request.getId()) : null,
+                request.getTitle() != null
+                    ? NoticeSpecification.containsTitle(request.getTitle())
+                    : null,
+                request.getUseFlag() != null
+                    ? NoticeSpecification.equalUseFlag(request.getUseFlag())
+                    : null)
+            .filter(Objects::nonNull)
+            .toList();
+
+    Specification<Notice> spec =
+        specs.isEmpty() ? null : specs.stream().reduce(Specification::and).orElse(null);
+
     return ListResult.of(
         noticeRepository
-            .findAllByRemovedFlagIsFalse(
+            .findAll(
+                spec,
                 PageRequest.of(
                     request.getPage() - 1, request.getPageSize(), Sort.by("id").descending()))
             .map(NoticeDto.Response::of));

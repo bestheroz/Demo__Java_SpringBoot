@@ -3,6 +3,7 @@ package com.github.bestheroz.demo.services;
 import com.github.bestheroz.demo.domain.User;
 import com.github.bestheroz.demo.dtos.user.*;
 import com.github.bestheroz.demo.repository.UserRepository;
+import com.github.bestheroz.demo.specification.UserSpecification;
 import com.github.bestheroz.standard.common.authenticate.JwtTokenProvider;
 import com.github.bestheroz.standard.common.dto.ListResult;
 import com.github.bestheroz.standard.common.dto.TokenDto;
@@ -11,11 +12,15 @@ import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.exception.RequestException400;
 import com.github.bestheroz.standard.common.security.Operator;
 import com.github.bestheroz.standard.common.util.PasswordUtil;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +34,29 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public ListResult<UserDto.Response> getUserList(UserDto.Request request) {
+    List<Specification<User>> specs =
+        Stream.of(
+                UserSpecification.removedFlagIsFalse(),
+                request.getId() != null ? UserSpecification.equalId(request.getId()) : null,
+                request.getLoginId() != null
+                    ? UserSpecification.containsLoginId(request.getLoginId())
+                    : null,
+                request.getName() != null
+                    ? UserSpecification.containsName(request.getName())
+                    : null,
+                request.getUseFlag() != null
+                    ? UserSpecification.equalUseFlag(request.getUseFlag())
+                    : null)
+            .filter(Objects::nonNull)
+            .toList();
+
+    Specification<User> spec =
+        specs.isEmpty() ? null : specs.stream().reduce(Specification::and).orElse(null);
+
     return ListResult.of(
         userRepository
-            .findAllByRemovedFlagIsFalse(
+            .findAll(
+                spec,
                 PageRequest.of(
                     request.getPage() - 1, request.getPageSize(), Sort.by("id").descending()))
             .map(UserDto.Response::of));

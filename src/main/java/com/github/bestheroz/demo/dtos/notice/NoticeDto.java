@@ -16,6 +16,15 @@ public class NoticeDto {
 
     @Schema(description = "페이지 크기", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer pageSize;
+
+    @Schema(description = "ID(KEY)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Long id;
+
+    @Schema(description = "제목", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String title;
+
+    @Schema(description = "사용 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Boolean useFlag;
   }
 
   @Data

@@ -3,6 +3,7 @@ package com.github.bestheroz.demo.services;
 import com.github.bestheroz.demo.domain.Admin;
 import com.github.bestheroz.demo.dtos.admin.*;
 import com.github.bestheroz.demo.repository.AdminRepository;
+import com.github.bestheroz.demo.specification.AdminSpecification;
 import com.github.bestheroz.standard.common.authenticate.JwtTokenProvider;
 import com.github.bestheroz.standard.common.dto.ListResult;
 import com.github.bestheroz.standard.common.dto.TokenDto;
@@ -11,11 +12,15 @@ import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.exception.RequestException400;
 import com.github.bestheroz.standard.common.security.Operator;
 import com.github.bestheroz.standard.common.util.PasswordUtil;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +34,32 @@ public class AdminService {
 
   @Transactional(readOnly = true)
   public ListResult<AdminDto.Response> getAdminList(AdminDto.Request request) {
+    List<Specification<Admin>> specs =
+        Stream.of(
+                AdminSpecification.removedFlagIsFalse(),
+                request.getId() != null ? AdminSpecification.equalId(request.getId()) : null,
+                request.getLoginId() != null
+                    ? AdminSpecification.containsLoginId(request.getLoginId())
+                    : null,
+                request.getName() != null
+                    ? AdminSpecification.containsName(request.getName())
+                    : null,
+                request.getUseFlag() != null
+                    ? AdminSpecification.equalUseFlag(request.getUseFlag())
+                    : null,
+                request.getManagerFlag() != null
+                    ? AdminSpecification.equalManagerFlag(request.getManagerFlag())
+                    : null)
+            .filter(Objects::nonNull)
+            .toList();
+
+    Specification<Admin> spec =
+        specs.isEmpty() ? null : specs.stream().reduce(Specification::and).orElse(null);
+
     return ListResult.of(
         adminRepository
-            .findAllByRemovedFlagIsFalse(
+            .findAll(
+                spec,
                 PageRequest.of(
                     request.getPage() - 1, request.getPageSize(), Sort.by("id").descending()))
             .map(AdminDto.Response::of));

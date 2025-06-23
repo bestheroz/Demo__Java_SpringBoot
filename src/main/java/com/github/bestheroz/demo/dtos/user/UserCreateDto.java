@@ -22,9 +22,6 @@ public class UserCreateDto {
     @Schema(description = "사용 여부", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean useFlag;
 
-    @Schema(description = "매니저 여부(모든 권한 소유)", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Boolean managerFlag;
-
     @Schema(description = "권한 목록", requiredMode = Schema.RequiredMode.REQUIRED)
     private List<AuthorityEnum> authorities;
 

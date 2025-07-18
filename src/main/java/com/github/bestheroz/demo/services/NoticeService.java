@@ -20,12 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class NoticeService {
   private final NoticeRepository noticeRepository;
 
-  @Transactional(readOnly = true)
   public ListResult<NoticeDto.Response> getNoticeList(NoticeDto.Request request) {
     List<Specification<Notice>> specs =
         Stream.of(
@@ -52,7 +51,6 @@ public class NoticeService {
             .map(NoticeDto.Response::of));
   }
 
-  @Transactional(readOnly = true)
   public NoticeDto.Response getNotice(Long id) {
     return noticeRepository
         .findById(id)
@@ -60,10 +58,12 @@ public class NoticeService {
         .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_NOTICE));
   }
 
+  @Transactional
   public NoticeDto.Response createNotice(NoticeCreateDto.Request request, Operator operator) {
     return NoticeDto.Response.of(noticeRepository.save(request.toEntity(operator)));
   }
 
+  @Transactional
   public NoticeDto.Response updateNotice(
       Long id, NoticeCreateDto.Request request, Operator operator) {
     return NoticeDto.Response.of(
@@ -78,6 +78,7 @@ public class NoticeService {
             .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_NOTICE)));
   }
 
+  @Transactional
   public void deleteNotice(Long id, Operator operator) {
     noticeRepository
         .findById(id)

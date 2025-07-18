@@ -26,13 +26,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
   private final UserRepository userRepository;
   private final JwtTokenProvider jwtTokenProvider;
 
-  @Transactional(readOnly = true)
   public ListResult<UserDto.Response> getUserList(UserDto.Request request) {
     List<Specification<User>> specs =
         Stream.of(
@@ -62,7 +61,6 @@ public class UserService {
             .map(UserDto.Response::of));
   }
 
-  @Transactional(readOnly = true)
   public UserDto.Response getUser(final Long id) {
     return this.userRepository
         .findById(id)
@@ -70,6 +68,7 @@ public class UserService {
         .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_USER));
   }
 
+  @Transactional
   public UserDto.Response createUser(final UserCreateDto.Request request, Operator operator) {
     if (this.userRepository.findByLoginIdAndRemovedFlagFalse(request.getLoginId()).isPresent()) {
       throw new RequestException400(ExceptionCode.ALREADY_JOINED_ACCOUNT);
@@ -78,6 +77,7 @@ public class UserService {
     return UserDto.Response.of(this.userRepository.save(request.toEntity(operator)));
   }
 
+  @Transactional
   public UserDto.Response updateUser(
       final Long id, final UserUpdateDto.Request request, Operator operator) {
     User user =
@@ -102,6 +102,7 @@ public class UserService {
     return UserDto.Response.of(user);
   }
 
+  @Transactional
   public void deleteUser(final Long id, Operator operator) {
     User user =
         this.userRepository
@@ -115,6 +116,7 @@ public class UserService {
     user.remove(operator);
   }
 
+  @Transactional
   public UserDto.Response changePassword(
       final Long id, final UserChangePasswordDto.Request request, Operator operator) {
     User user =
@@ -134,6 +136,7 @@ public class UserService {
     return UserDto.Response.of(user);
   }
 
+  @Transactional
   public TokenDto loginUser(UserLoginDto.Request request) {
     User user =
         this.userRepository
@@ -150,6 +153,7 @@ public class UserService {
     return new TokenDto(jwtTokenProvider.createAccessToken(new Operator(user)), user.getToken());
   }
 
+  @Transactional
   public TokenDto renewToken(String refreshToken) {
     Long id = jwtTokenProvider.getId(refreshToken);
     User user =
@@ -171,6 +175,7 @@ public class UserService {
     }
   }
 
+  @Transactional
   public void logout(Long id) {
     User user =
         this.userRepository
@@ -179,7 +184,6 @@ public class UserService {
     user.logout();
   }
 
-  @Transactional(readOnly = true)
   public Boolean checkLoginId(String loginId, Long id) {
     return this.userRepository.findByLoginIdAndRemovedFlagFalseAndIdNot(loginId, id).isEmpty();
   }

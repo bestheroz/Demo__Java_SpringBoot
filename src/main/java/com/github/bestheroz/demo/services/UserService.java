@@ -126,7 +126,7 @@ public class UserService {
       log.warn("password not match");
       throw new RequestException400(ExceptionCode.UNKNOWN_USER);
     }
-    if (user.getPassword().equals(request.getNewPassword())) {
+    if (PasswordUtil.isPasswordValid(request.getNewPassword(), user.getPassword())) {
       throw new RequestException400(ExceptionCode.CHANGE_TO_SAME_PASSWORD);
     }
 

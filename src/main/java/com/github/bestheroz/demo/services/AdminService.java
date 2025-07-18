@@ -136,7 +136,7 @@ public class AdminService {
       log.warn("password not match");
       throw new RequestException400(ExceptionCode.UNKNOWN_ADMIN);
     }
-    if (admin.getPassword().equals(request.getNewPassword())) {
+    if (PasswordUtil.isPasswordValid(request.getNewPassword(), admin.getPassword())) {
       throw new RequestException400(ExceptionCode.CHANGE_TO_SAME_PASSWORD);
     }
 

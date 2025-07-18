@@ -50,7 +50,7 @@ public class TraceLogger {
       stopWatch.stop();
       if (StringUtils.containsAny(
           signature, "Repository.", "RepositoryCustom.", ".domain.", "SpecificationExecutor.")) {
-        log.info(STR_END_EXECUTE_TIME_FOR_REPOSITORY, signature, stopWatch.getTotalTimeSeconds());
+        log.info(STR_END_EXECUTE_TIME_FOR_REPOSITORY, signature, stopWatch.getTotalTimeMillis());
       } else {
         final String str = objectMapper.writeValueAsString(retVal);
         log.info(
@@ -66,7 +66,7 @@ public class TraceLogger {
       if (stopWatch.isRunning()) {
         stopWatch.stop();
       }
-      log.info(STR_END_EXECUTE_TIME_FOR_EXCEPTION, signature, stopWatch.getTotalTimeSeconds());
+      log.info(STR_END_EXECUTE_TIME_FOR_EXCEPTION, signature, stopWatch.getTotalTimeMillis());
       throw e;
     }
     return retVal;

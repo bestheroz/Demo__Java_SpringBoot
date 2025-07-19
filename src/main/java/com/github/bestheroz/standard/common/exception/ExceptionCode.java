@@ -20,6 +20,7 @@ public enum ExceptionCode {
   UNJOINED_ACCOUNT("가입되지 않은 계정"),
   CHANGE_TO_SAME_PASSWORD("이전과 동일한 비밀번호로 변경 불가능"),
   EXPIRED_TOKEN("만료된 토큰 정보"),
+  MISSING_AUTHENTICATION("인증 정보가 누락됨"),
   CANNOT_CHANGE_OTHERS_PASSWORD("다른 사용자의 비밀번호 변경 불가능");
 
   private final String message;

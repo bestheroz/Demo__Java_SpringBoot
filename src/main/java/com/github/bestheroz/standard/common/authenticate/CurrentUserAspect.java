@@ -19,9 +19,17 @@ public class CurrentUserAspect {
       "execution(* com.github.bestheroz..*(.., @com.github.bestheroz.standard.common.authenticate.CurrentUser (*), ..))")
   public Object checkCurrentUser(ProceedingJoinPoint joinPoint) throws Throwable {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (!authentication.isAuthenticated() || authentication.getPrincipal() == null) {
-      throw new AuthenticationException401(ExceptionCode.EXPIRED_TOKEN);
+
+    if (authentication == null
+        || !authentication.isAuthenticated()
+        || authentication.getPrincipal() == null) {
+
+      log.error(
+          "@CurrentUser 코드 누락됨 - Authentication missing or invalid for method: "
+              + joinPoint.getSignature().getName());
+      throw new AuthenticationException401(ExceptionCode.MISSING_AUTHENTICATION);
     }
+
     return joinPoint.proceed();
   }
 }

@@ -4,6 +4,7 @@ import com.github.bestheroz.standard.common.response.ApiResult;
 import com.github.bestheroz.standard.common.response.Result;
 import com.github.bestheroz.standard.common.util.LogUtils;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -129,5 +131,17 @@ public class ApiExceptionHandler {
   public ResponseEntity<ApiResult<?>> duplicateKeyException(final DuplicateKeyException e) {
     log.warn(LogUtils.getStackTrace(e));
     return ResponseEntity.badRequest().build();
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ApiResult<?>> methodArgumentNotValidException(
+      MethodArgumentNotValidException e) {
+    log.warn(LogUtils.getStackTrace(e));
+    String errors =
+        e.getBindingResult().getFieldErrors().stream()
+            .map(error -> error.getField() + ": " + error.getDefaultMessage())
+            .collect(Collectors.joining(", "));
+    log.warn("Validation failed: " + errors);
+    return ResponseEntity.badRequest().body(ApiResult.of(ExceptionCode.INVALID_PARAMETER, errors));
   }
 }

@@ -11,6 +11,8 @@ Spring Boot 기반의 데모 애플리케이션으로 Admin, User, Notice 도메
 - **JAR 생성**: `./gradlew bootJar` (결과물: build/libs/demo.jar)
 - **코드 포맷팅**: `./gradlew spotlessApply`
 - **의존성 버전 체크**: `./gradlew dependencyUpdates`
+- **프로파일별 실행**: `./gradlew bootRun --args='--spring.profiles.active=local'`
+- **Docker 실행**: `docker run -p 8000:8000 demo:latest`
 
 ## Technology Stack
 - Java 21
@@ -79,3 +81,8 @@ com.github.bestheroz
 - **로깅**: Logback + Sentry 연동
 - **CORS**: React 개발서버 (localhost:3000) 허용
 - **세션**: Stateless (JWT 토큰 기반)
+
+## Important Commands for Claude Code
+- **코드 포맷 적용 후 빌드**: `./gradlew spotlessApply && ./gradlew build`
+- **변경사항 확인**: `./gradlew spotlessCheck` (포맷 위반 체크)
+- **애플리케이션 상태 확인**: `curl http://localhost:8000/actuator/health`

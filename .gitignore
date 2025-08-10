@@ -19,5 +19,3 @@ hs_err_*.log
 out
 !**/sign/out/
 src/main/generated
-
-CLAUDE.md

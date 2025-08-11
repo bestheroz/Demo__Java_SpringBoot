@@ -58,7 +58,7 @@ public class UserController {
           "*어세스 토큰* 만료 시 *리플래시 토큰* 으로 *어세스 토큰* 을 갱신합니다.\n"
               + "    \"(동시에 여러 사용자가 접속하고 있다면 *리플래시 토큰* 값이 달라서 갱신이 안될 수 있습니다.)")
   public TokenDto renewToken(
-      @Schema(description = "리플래시 토큰") @RequestHeader(value = "AuthorizationR")
+      @Schema(description = "리플래시 토큰") @RequestHeader(value = "Authorization")
           String refreshToken) {
     return userService.renewToken(refreshToken);
   }

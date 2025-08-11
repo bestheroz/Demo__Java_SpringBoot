@@ -41,7 +41,7 @@ sentry:
   dsn:
   traces-sample-rate: 0
 jwt:
-  secret: JOONY.KIM!!demo-api%%jwt^^secret
+  secret: ${JWT_SECRET:JOONY.KIM!!demo-api%%jwt^^secret}
   access-token-expiration-minutes: 5
   refresh-token-expiration-minutes: 30
 ---
@@ -50,9 +50,9 @@ spring:
     activate:
       on-profile: local
   datasource:
-    url: jdbc:mysql://stkim.ddns.net:3306/studydb?useSSL=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
-    username: studydb
-    password: studydb%#123
+    url: ${DB_URL:jdbc:mysql://stkim.ddns.net:3306/studydb?useSSL=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull}
+    username: ${DB_USERNAME:studydb}
+    password: ${DB_PASSWORD:studydb%#123}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 3

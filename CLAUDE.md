@@ -12,11 +12,12 @@ Spring Boot 기반의 데모 애플리케이션으로 Admin, User, Notice 도메
 - **코드 포맷팅**: `./gradlew spotlessApply`
 - **의존성 버전 체크**: `./gradlew dependencyUpdates`
 - **프로파일별 실행**: `./gradlew bootRun --args='--spring.profiles.active=local'`
+- **Docker 빌드**: `docker build -t demo:latest .`
 - **Docker 실행**: `docker run -p 8000:8000 demo:latest`
 
 ## Technology Stack
 - Java 21
-- Spring Boot 4.0.0-M1
+- Spring Boot 3.5.5
 - Spring Data JPA
 - Spring Security
 - MySQL

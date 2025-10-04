@@ -16,8 +16,8 @@ Spring Boot 기반의 데모 애플리케이션으로 Admin, User, Notice 도메
 - **Docker 실행**: `docker run -p 8000:8000 demo:latest`
 
 ## Technology Stack
-- Java 21
-- Spring Boot 3.5.5
+- Java 25
+- Spring Boot 3.5.6
 - Spring Data JPA
 - Spring Security
 - MySQL
@@ -55,10 +55,17 @@ com.github.bestheroz
 - **Notice**: 공지사항 도메인 - CRUD
 
 ### Security Architecture
-- JWT 기반 인증 (Access Token + Refresh Token)
-- Spring Security FilterChain 설정
-- `@PreAuthorize` 어노테이션으로 메서드 레벨 권한 제어
-- `@CurrentUser` 커스텀 어노테이션으로 현재 사용자 정보 주입
+- **JWT 기반 인증** (Access Token + Refresh Token)
+  - Access Token: 기본 5분 (local: 1440분)
+  - Refresh Token: 30분
+  - Token 갱신: 3초 이내 발급된 Refresh Token은 재사용
+- **Spring Security FilterChain**: `JwtAuthenticationFilter`로 요청 검증
+  - Public Path: `SecurityConfig`의 `GET_PUBLIC`, `POST_PUBLIC`, `DELETE_PUBLIC` 배열로 관리
+  - 루트 경로(/) 접근 시 404 반환
+- **권한 제어**
+  - `@PreAuthorize` 어노테이션으로 메서드 레벨 권한 제어
+  - `@CurrentUser` 커스텀 어노테이션으로 현재 사용자 정보 주입
+- **패스워드 관리**: `PasswordUtil`로 암호화 및 검증
 
 ### Database
 - MySQL 사용
@@ -77,13 +84,36 @@ com.github.bestheroz
 - 모든 컨트롤러에 `@Tag`, `@Operation` 어노테이션 적용
 
 ## Development Notes
-- **테스트**: 현재 테스트 코드가 없음 (src/test 디렉토리 없음)
+
+### 트랜잭션 관리 패턴
+- **Service 클래스**: `@Transactional(readOnly = true)` (클래스 레벨)
+- **수정 메서드**: `@Transactional` (메서드 레벨로 readOnly 오버라이드)
+- **트랜잭션 경계**: Controller → Service (with @Transactional) → Repository
+
+### 코딩 규칙
 - **코드 스타일**: Google Java Format 사용 (Spotless 플러그인)
-- **로깅**: Logback + Sentry 연동
+- **DTO 패턴**: Request/Response 내부 클래스로 그룹화 (예: `AdminDto.Request`, `AdminDto.Response`)
+- **엔티티 설계**:
+  - 공통 필드: `IdCreated` (id, createdBy, createdAt), `IdCreatedUpdated` (+ updatedBy, updatedAt, removedFlag)
+  - Soft Delete: `removedFlag`로 논리 삭제
+- **동적 쿼리**: JPA Specification 사용 (Specification 패키지)
+
+### 기타
+- **테스트**: 현재 테스트 코드가 없음 (src/test 디렉토리 없음)
+- **로깅**: Logback + Sentry 연동, 헬스체크 엔드포인트는 로그 제외
 - **CORS**: React 개발서버 (localhost:3000) 허용
 - **세션**: Stateless (JWT 토큰 기반)
+- **Virtual Threads**: Spring Boot 3.x의 Virtual Thread 활성화 (`spring.threads.virtual.enabled=true`)
 
 ## Important Commands for Claude Code
 - **코드 포맷 적용 후 빌드**: `./gradlew spotlessApply && ./gradlew build`
 - **변경사항 확인**: `./gradlew spotlessCheck` (포맷 위반 체크)
 - **애플리케이션 상태 확인**: `curl http://localhost:8000/actuator/health`
+- **Flyway 마이그레이션**: 애플리케이션 시작 시 자동 실행 (migration/ 디렉토리)
+
+## 주요 엔드포인트
+- **Health Check**: `GET /api/v1/health/**` (인증 불필요, 로그 제외)
+- **Swagger UI**: `GET /swagger-ui.html` (prod 제외)
+- **Admin 로그인**: `POST /api/v1/admins/login`
+- **User 로그인**: `POST /api/v1/users/login`
+- **Token 갱신**: `POST /api/v1/admins/renew-token`, `POST /api/v1/users/renew-token`

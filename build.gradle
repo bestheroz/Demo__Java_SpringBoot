@@ -1,17 +1,18 @@
 plugins {
-    id "org.springframework.boot" version "3.5.5"
+    id "org.springframework.boot" version "3.5.6"
     id "java"
     id "idea"
-    id "com.diffplug.spotless" version "7.2.1"
-    id "com.github.ben-manes.versions" version "0.52.0"
+    id "com.diffplug.spotless" version "8.0.0"
+    id "com.github.ben-manes.versions" version "0.53.0"
     id "io.spring.dependency-management" version "1.1.7"
 }
 
 group = "com.github.bestheroz"
 version = "0.0.1"
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 repositories {
@@ -29,8 +30,8 @@ dependencies {
     implementation "com.mysql:mysql-connector-j:9.4.0"
     implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.12.0"
     implementation "com.auth0:java-jwt:4.5.0"
-    implementation "io.sentry:sentry-spring-boot-starter-jakarta:8.21.1"
-    implementation "io.sentry:sentry-logback:8.21.1"
+    implementation "io.sentry:sentry-spring-boot-starter-jakarta:8.23.0"
+    implementation "io.sentry:sentry-logback:8.23.0"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.12"
     implementation "org.fusesource.jansi:jansi:2.4.2"
     implementation "org.projectlombok:lombok"

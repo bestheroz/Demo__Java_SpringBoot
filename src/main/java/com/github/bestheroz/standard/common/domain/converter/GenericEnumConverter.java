@@ -19,20 +19,16 @@ public class GenericEnumConverter<T extends Enum<T>> implements AttributeConvert
 
   @Override
   public String convertToDatabaseColumn(T attribute) {
-    if (attribute == null) {
-      return null;
-    }
-    return attribute.name();
+    return attribute != null ? attribute.name() : null;
   }
 
   @Override
   public T convertToEntityAttribute(String dbData) {
-    if (dbData == null) {
-      return null;
-    }
-    return Stream.of(enumClass.getEnumConstants())
-        .filter(e -> e.name().equals(dbData))
-        .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("Unknown enum value: " + dbData));
+    return dbData != null
+        ? Stream.of(enumClass.getEnumConstants())
+            .filter(e -> e.name().equals(dbData))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Unknown enum value: " + dbData))
+        : null;
   }
 }

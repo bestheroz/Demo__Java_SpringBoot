@@ -4,23 +4,15 @@ import com.github.bestheroz.demo.domain.Admin;
 import com.github.bestheroz.demo.domain.User;
 import com.github.bestheroz.standard.common.enums.UserTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
-@Data
-@AllArgsConstructor
-public class UserSimpleDto {
-  @Schema(description = "ID(KEY)", requiredMode = Schema.RequiredMode.REQUIRED)
-  private Long id;
-
-  @Schema(description = "관리자 or 유저", requiredMode = Schema.RequiredMode.REQUIRED)
-  private UserTypeEnum type;
-
-  @Schema(description = "관리자 ID or 유저 계정 ID", requiredMode = Schema.RequiredMode.REQUIRED)
-  private String loginId;
-
-  @Schema(description = "관리자 이름 or 유저 이름", requiredMode = Schema.RequiredMode.REQUIRED)
-  private String name;
+public record UserSimpleDto(
+    @Schema(description = "ID(KEY)", requiredMode = Schema.RequiredMode.REQUIRED) Long id,
+    @Schema(description = "관리자 or 유저", requiredMode = Schema.RequiredMode.REQUIRED)
+        UserTypeEnum type,
+    @Schema(description = "관리자 ID or 유저 계정 ID", requiredMode = Schema.RequiredMode.REQUIRED)
+        String loginId,
+    @Schema(description = "관리자 이름 or 유저 이름", requiredMode = Schema.RequiredMode.REQUIRED)
+        String name) {
 
   public static UserSimpleDto of(Admin entity) {
     return new UserSimpleDto(

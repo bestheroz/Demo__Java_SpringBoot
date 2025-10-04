@@ -109,7 +109,7 @@ public class UserService {
             .findById(id)
             .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_USER));
     if (user.getRemovedFlag()) throw new RequestException400(ExceptionCode.UNKNOWN_USER);
-    if (user.getId().equals(operator.getId())) {
+    if (Objects.equals(user.getId(), operator.getId())) {
       throw new RequestException400(ExceptionCode.CANNOT_REMOVE_YOURSELF);
     }
 

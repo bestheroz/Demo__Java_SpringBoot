@@ -50,10 +50,9 @@ public class IdCreated {
     this.createdAt = instant;
     this.createdObjectId = operator.getId();
     this.createdObjectType = operator.getType();
-    if (operator.getType().equals(UserTypeEnum.ADMIN)) {
-      this.createdByAdmin = Admin.of(operator);
-    } else if (operator.getType().equals(UserTypeEnum.USER)) {
-      this.createdByUser = User.of(operator);
+    switch (operator.getType()) {
+      case ADMIN -> this.createdByAdmin = Admin.of(operator);
+      case USER -> this.createdByUser = User.of(operator);
     }
   }
 

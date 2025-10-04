@@ -88,7 +88,7 @@ public class AdminService {
             .findById(id)
             .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_ADMIN));
     if (admin.getRemovedFlag()) throw new RequestException400(ExceptionCode.UNKNOWN_ADMIN);
-    if (!admin.getManagerFlag() && admin.getId().equals(operator.getId())) {
+    if (!admin.getManagerFlag() && Objects.equals(admin.getId(), operator.getId())) {
       throw new RequestException400(ExceptionCode.CANNOT_UPDATE_YOURSELF);
     }
     if (!admin.getManagerFlag() && !request.getManagerFlag() && !operator.getManagerFlag()) {
@@ -119,7 +119,7 @@ public class AdminService {
             .findById(id)
             .orElseThrow(() -> new RequestException400(ExceptionCode.UNKNOWN_ADMIN));
     if (admin.getRemovedFlag()) throw new RequestException400(ExceptionCode.UNKNOWN_ADMIN);
-    if (admin.getId().equals(operator.getId())) {
+    if (Objects.equals(admin.getId(), operator.getId())) {
       throw new RequestException400(ExceptionCode.CANNOT_REMOVE_YOURSELF);
     }
 

@@ -7,6 +7,10 @@ spring:
   servlet:
     multipart:
       enabled: false
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
   web:
     resources:
       chain:
@@ -21,6 +25,11 @@ spring:
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
 server:
   port: 8000
   compression:
@@ -31,10 +40,6 @@ server:
     session:
       cookie:
         name: JSESSIONID_DEMO
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
 decorator:
   datasource:
     p6spy:
@@ -60,6 +65,11 @@ spring:
     hikari:
       maximum-pool-size: 3
       minimum-idle: 2
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
 server:
   port: 8000
 sentry:
@@ -82,6 +92,11 @@ spring:
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
 sentry:
   environment: sandbox
 jwt:
@@ -98,6 +113,11 @@ spring:
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
 sentry:
   environment: qa
 ---
@@ -112,8 +132,5 @@ spring:
     hikari:
       maximum-pool-size: 30
       minimum-idle: 10
-springdoc:
-  api-docs:
-    enabled: false
 sentry:
   environment: prod

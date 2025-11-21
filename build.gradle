@@ -1,8 +1,8 @@
 plugins {
-    id "org.springframework.boot" version "3.5.7"
+    id "org.springframework.boot" version "4.0.0"
     id "java"
     id "idea"
-    id "com.diffplug.spotless" version "8.0.0"
+    id "com.diffplug.spotless" version "8.1.0"
     id "com.github.ben-manes.versions" version "0.53.0"
     id "io.spring.dependency-management" version "1.1.7"
 }
@@ -21,18 +21,17 @@ repositories {
 
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-starter-aop"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.boot:spring-boot-configuration-processor"
     implementation "org.aspectj:aspectjweaver"
     implementation "org.apache.commons:commons-lang3"
     implementation "com.mysql:mysql-connector-j:9.5.0"
-    implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.12.0"
+    implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:2.0.0"
     implementation "com.auth0:java-jwt:4.5.0"
-    implementation "io.sentry:sentry-spring-boot-starter-jakarta:8.25.0"
-    implementation "io.sentry:sentry-logback:8.25.0"
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13"
+    implementation "io.sentry:sentry-spring-boot-4:8.26.0"
+    implementation "io.sentry:sentry-logback:8.26.0"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0"
     implementation "org.fusesource.jansi:jansi:2.4.2"
     implementation "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"

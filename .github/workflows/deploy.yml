@@ -17,6 +17,8 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@main
+        with:
+          fetch-depth: 1
 
       - name: set env
         run: |
@@ -44,17 +46,21 @@ jobs:
           echo "REF_BRANCH=${REF_BRANCH}" >> $GITHUB_ENV
           echo "ECR_URI=${ECR_URI}" >> $GITHUB_ENV
 
-      - name: Set up JDK 21
+      - name: Set up JDK 25
         uses: actions/setup-java@main
         with:
           distribution: 'corretto'
-          java-version: '21'
+          java-version: '25'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@main
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+          dependency-graph: disabled
+          add-job-summary: never
 
       - name: Build with Gradle
-        run: ./gradlew assemble --no-daemon -Dspring.profiles.active=${{ env.PROFILE }}  -x test
+        run: ./gradlew assemble --no-daemon --parallel --configuration-cache --build-cache -Dspring.profiles.active=${{ env.PROFILE }} -x test
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master
@@ -67,13 +73,18 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@main
 
-      - name: docker build and push
-        run: |
-          ECR_URI=${{ env.ECR_URI }}
-          TAG_NAME=${{ env.TAG_NAME }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
 
-          docker build -t $ECR_URI:$TAG_NAME .
-          docker push $ECR_URI:$TAG_NAME
+      - name: Build and push
+        uses: docker/build-push-action@master
+        with:
+          context: .
+          push: true
+          tags: ${{ env.ECR_URI }}:${{ env.TAG_NAME }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
 
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@main

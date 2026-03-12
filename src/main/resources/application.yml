@@ -58,7 +58,7 @@ spring:
     activate:
       on-profile: local
   datasource:
-    url: ${DB_URL:jdbc:mysql://stkim.ddns.net:3306/studydb?useSSL=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull}
+    url: ${DB_URL:jdbc:mysql://dev.baot.co.kr:3306/studydb?useSSL=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull}
     username: ${DB_USERNAME:studydb}
     password: ${DB_PASSWORD:studydb%#123}
     driver-class-name: com.mysql.cj.jdbc.Driver

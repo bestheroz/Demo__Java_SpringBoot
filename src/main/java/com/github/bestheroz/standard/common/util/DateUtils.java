@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
 @UtilityClass
@@ -53,7 +52,7 @@ public class DateUtils {
     Assert.hasText(pattern, "pattern parameter must not be empty or null");
     return Optional.ofNullable(date)
         .map(item -> toString(item.getTime(), pattern, ZoneId.of("UTC")))
-        .orElse(StringUtils.EMPTY);
+        .orElse("");
   }
 
   public String toString(final String string, final String fromPattern, final String toPattern) {
@@ -64,7 +63,7 @@ public class DateUtils {
             item ->
                 parseOffsetDateTime(item, fromPattern)
                     .format(DateTimeFormatter.ofPattern(toPattern)))
-        .orElse(StringUtils.EMPTY);
+        .orElse("");
   }
 
   public OffsetDateTime parseOffsetDateTime(final String text, final String pattern) {

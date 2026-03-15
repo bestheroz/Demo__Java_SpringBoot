@@ -1,14 +1,13 @@
 package com.github.bestheroz.standard.common.log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StopWatch;
 
 @Slf4j
 @Aspect
@@ -30,43 +29,42 @@ public class TraceLogger {
   public Object writeLog(final ProceedingJoinPoint pjp) throws Throwable {
     final Object retVal;
 
+    final String packagePrefix =
+        pjp.getStaticPart().getSignature().getDeclaringType().getPackageName() + ".";
     final String signature =
-        StringUtils.remove(
-            pjp.getStaticPart().getSignature().toString(),
-            pjp.getStaticPart().getSignature().getDeclaringType().getPackageName().concat("."));
+        pjp.getStaticPart().getSignature().toString().replace(packagePrefix, "");
 
-    if (StringUtils.containsAny(signature, "HealthController", "HealthRepository")) {
+    if (signature.contains("HealthController") || signature.contains("HealthRepository")) {
       return pjp.proceed();
     }
 
-    final StopWatch stopWatch = new StopWatch(signature);
-    stopWatch.start();
+    final long startNanos = System.nanoTime();
 
     try {
       log.info(STR_START_EXECUTE_TIME, signature);
 
       retVal = pjp.proceed();
 
-      stopWatch.stop();
-      if (StringUtils.containsAny(
-          signature, "Repository.", "RepositoryCustom.", ".domain.", "SpecificationExecutor.")) {
-        log.info(STR_END_EXECUTE_TIME_FOR_REPOSITORY, signature, stopWatch.getTotalTimeMillis());
+      final long elapsedMs = (System.nanoTime() - startNanos) / 1_000_000;
+      if (signature.contains("Repository.")
+          || signature.contains("RepositoryCustom.")
+          || signature.contains(".domain.")
+          || signature.contains("SpecificationExecutor.")) {
+        log.info(STR_END_EXECUTE_TIME_FOR_REPOSITORY, signature, elapsedMs);
       } else {
         final String str = objectMapper.writeValueAsString(retVal);
+        final String display = Objects.requireNonNullElse(str, "null");
         log.info(
             STR_END_EXECUTE_TIME,
             signature,
-            stopWatch.getTotalTimeSeconds(),
-            StringUtils.abbreviate(
-                StringUtils.defaultString(str, "null"),
-                "--skip massive text-- total length : " + StringUtils.length(str),
-                1000));
+            elapsedMs,
+            display.length() > 1000
+                ? "--skip massive text-- total length : " + display.length()
+                : display);
       }
     } catch (final Throwable e) {
-      if (stopWatch.isRunning()) {
-        stopWatch.stop();
-      }
-      log.info(STR_END_EXECUTE_TIME_FOR_EXCEPTION, signature, stopWatch.getTotalTimeMillis());
+      final long elapsedMs = (System.nanoTime() - startNanos) / 1_000_000;
+      log.info(STR_END_EXECUTE_TIME_FOR_EXCEPTION, signature, elapsedMs);
       throw e;
     }
     return retVal;

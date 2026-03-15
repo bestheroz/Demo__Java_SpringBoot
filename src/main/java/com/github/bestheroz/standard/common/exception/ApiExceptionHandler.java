@@ -6,7 +6,6 @@ import com.github.bestheroz.standard.common.util.LogUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,8 +83,7 @@ public class ApiExceptionHandler {
   @ExceptionHandler({IllegalArgumentException.class})
   public ResponseEntity<ApiResult<?>> illegalArgumentException(final IllegalArgumentException e) {
     log.warn(LogUtils.getStackTrace(e));
-    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
-        .body(ApiResult.of(ExceptionCode.INVALID_PARAMETER));
+    return ResponseEntity.status(422).body(ApiResult.of(ExceptionCode.INVALID_PARAMETER));
   }
 
   @ExceptionHandler({UsernameNotFoundException.class})
@@ -119,8 +117,7 @@ public class ApiExceptionHandler {
   })
   public ResponseEntity<ApiResult<?>> httpMediaTypeNotAcceptableException(
       final Throwable e, final HttpServletResponse response) {
-    if (StringUtils.equals(
-        response.getHeader("refreshToken"), "must")) { // 데이터 수정시 가끔 이곳으로 넘어와 버리네..
+    if ("must".equals(response.getHeader("refreshToken"))) { // 데이터 수정시 가끔 이곳으로 넘어와 버리네..
       return Result.unauthenticated();
     }
     log.warn(LogUtils.getStackTrace(e));

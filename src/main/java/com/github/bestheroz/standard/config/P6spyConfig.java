@@ -6,7 +6,6 @@ import com.p6spy.engine.spy.P6SpyOptions;
 import com.p6spy.engine.spy.appender.MessageFormattingStrategy;
 import jakarta.annotation.PostConstruct;
 import java.text.MessageFormat;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.jdbc.internal.FormatStyle;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,7 +28,7 @@ public class P6spyConfig {
         final String prepared,
         final String sql,
         final String url) {
-      if (StringUtils.equals(sql, "select now()")) {
+      if ("select now()".equals(sql)) {
         return MessageFormat.format(
             "OperationTime: {0}ms | connectionId : {1} | {2} | readiness: {3}",
             elapsed, connectionId, category, sql);
@@ -39,17 +38,20 @@ public class P6spyConfig {
             elapsed,
             connectionId,
             category,
-            StringUtils.isEmpty(sql) ? "" : "\n" + this.formatSql(category, sql));
+            (sql == null || sql.isEmpty()) ? "" : "\n" + this.formatSql(category, sql));
       }
     }
 
     private String formatSql(final String category, final String sql) {
-      if (StringUtils.isEmpty(sql)) {
-        return StringUtils.EMPTY;
+      if (sql == null || sql.isEmpty()) {
+        return "";
       }
       if (Category.STATEMENT.getName().equals(category)) {
         if (EnvironmentUtils.isLocal()) {
-          return StringUtils.startsWithAny("create", "alter", "comment")
+          String lowerSql = sql.trim().toLowerCase();
+          return (lowerSql.startsWith("create")
+                  || lowerSql.startsWith("alter")
+                  || lowerSql.startsWith("comment"))
               ? FormatStyle.DDL.getFormatter().format(sql)
               : FormatStyle.HIGHLIGHT
                   .getFormatter()

@@ -17,7 +17,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -179,7 +178,7 @@ public class AdminService {
         && jwtTokenProvider.issuedRefreshTokenIn3Seconds(admin.getToken())) {
       return new TokenDto(
           jwtTokenProvider.createAccessToken(new Operator(admin)), admin.getToken());
-    } else if (StringUtils.equals(admin.getToken(), refreshToken)) {
+    } else if (Objects.equals(admin.getToken(), refreshToken)) {
       admin.renewToken(jwtTokenProvider.createRefreshToken(new Operator(admin)));
       return new TokenDto(
           jwtTokenProvider.createAccessToken(new Operator(admin)), admin.getToken());

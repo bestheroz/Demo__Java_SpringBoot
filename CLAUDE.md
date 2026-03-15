@@ -31,13 +31,14 @@ docker run -p 8000:8000 demo:latest
 ```
 
 ## Technology Stack
-- Java 25 (Spring Boot 4.0.1)
-- Spring Data JPA + MySQL
-- Spring Security + JWT (com.auth0:java-jwt)
-- Swagger/OpenAPI 3 (springdoc-openapi)
-- Spotless (Google Java Format)
-- P6Spy (SQL 로깅)
-- Sentry (에러 모니터링)
+- Java 25 (Spring Boot 4.1.0-M2)
+- Gradle 9.4.0
+- Spring Data JPA + MySQL (mysql-connector-j 9.6.0)
+- Spring Security + JWT (com.auth0:java-jwt 4.5.1)
+- Swagger/OpenAPI 3 (springdoc-openapi 3.0.2)
+- Spotless 8.3.0 (Google Java Format)
+- P6Spy (p6spy-spring-boot-starter 2.0.0, SQL 로깅)
+- Sentry 8.35.0 (에러 모니터링)
 
 ## Architecture
 
@@ -126,4 +127,4 @@ public class XxxService {
 - **CORS**: localhost:3000 허용 (React 개발서버)
 - **Virtual Threads**: 활성화됨 (`spring.threads.virtual.enabled=true`)
 - **테스트**: 현재 테스트 코드 없음
-- **Dockerfile**: amazoncorretto:21 사용 (Java 25와 불일치 - 주의)
+- **Dockerfile**: eclipse-temurin:25 멀티스테이지 빌드 (JDK builder + JRE runtime)

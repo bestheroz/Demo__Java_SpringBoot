@@ -9,10 +9,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,11 +58,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           REQUEST_PARAMETERS,
           request.getMethod(),
           requestURI,
-          StringUtils.defaultString(request.getQueryString()));
+          Objects.requireNonNullElse(request.getQueryString(), ""));
     }
 
-    StopWatch stopWatch = new StopWatch();
-    stopWatch.start();
+    long startNanos = System.nanoTime();
 
     try {
       // 퍼블릭 경로라면 토큰 검증 없이 다음 필터로 이동
@@ -95,9 +94,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
       filterChain.doFilter(request, response);
     } finally {
-      stopWatch.stop();
       if (!requestURI.startsWith("/api/v1/health/")) {
-        log.info(REQUEST_COMPLETE_EXECUTE_TIME, requestURI, stopWatch);
+        long elapsedMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
+        log.info(REQUEST_COMPLETE_EXECUTE_TIME, requestURI, elapsedMs + "ms");
       }
     }
   }

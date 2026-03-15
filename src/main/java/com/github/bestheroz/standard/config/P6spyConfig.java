@@ -8,6 +8,7 @@ import jakarta.annotation.PostConstruct;
 import java.text.MessageFormat;
 import org.hibernate.engine.jdbc.internal.FormatStyle;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 
 @Configuration
 public class P6spyConfig {
@@ -38,12 +39,12 @@ public class P6spyConfig {
             elapsed,
             connectionId,
             category,
-            (sql == null || sql.isEmpty()) ? "" : "\n" + this.formatSql(category, sql));
+            !StringUtils.hasText(sql) ? "" : "\n" + this.formatSql(category, sql));
       }
     }
 
     private String formatSql(final String category, final String sql) {
-      if (sql == null || sql.isEmpty()) {
+      if (!StringUtils.hasText(sql)) {
         return "";
       }
       if (Category.STATEMENT.getName().equals(category)) {

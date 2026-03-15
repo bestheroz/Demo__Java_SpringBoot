@@ -15,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 @Getter
 @Setter
@@ -106,7 +107,7 @@ public class Admin extends IdCreatedUpdated {
     this.authorities = authorities;
     Instant now = Instant.now();
     this.setUpdatedBy(operator, now);
-    if (password != null && !password.isEmpty()) {
+    if (StringUtils.hasText(password)) {
       this.password = PasswordUtil.getPasswordHash(password);
       this.changePasswordAt = now;
     }

@@ -7,6 +7,7 @@ import jakarta.persistence.Converter;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Converter
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class JsonAttributeConverter implements AttributeConverter<Object, String
   @Override
   public Object convertToEntityAttribute(String dbData) {
     try {
-      if (dbData == null || dbData.isEmpty()) {
+      if (!StringUtils.hasText(dbData)) {
         return null;
       }
       if (dbData.startsWith("[")) {

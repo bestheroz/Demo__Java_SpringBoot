@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 @Getter
 @Setter
@@ -95,7 +96,7 @@ public class User extends IdCreatedUpdated {
     this.authorities = authorities;
     Instant now = Instant.now();
     this.setUpdatedBy(operator, now);
-    if (password != null && !password.isEmpty()) {
+    if (StringUtils.hasText(password)) {
       this.password = PasswordUtil.getPasswordHash(password);
       this.changePasswordAt = now;
     }

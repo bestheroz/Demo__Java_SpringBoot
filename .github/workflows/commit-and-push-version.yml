@@ -41,3 +41,57 @@ jobs:
         with:
           commit_message: "⬆️ 버전 업데이트 (build.gradle) v${{ steps.tag.outputs.tag }}"
           branch: main
+
+  sync-version-to-branches:
+    needs: commit-and-push-version
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        branch: [sandbox, qa]
+    concurrency:
+      group: sync-version-${{ matrix.branch }}
+      cancel-in-progress: false
+    steps:
+      - name: 태그 가져오기
+        id: tag
+        uses: olegtarasov/get-tag@master
+
+      - name: 브랜치 존재 여부 확인
+        id: check_branch
+        run: |
+          if git ls-remote --heads origin ${{ matrix.branch }} | grep -q ${{ matrix.branch }}; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "브랜치 '${{ matrix.branch }}' 가 존재하지 않아 스킵합니다."
+          fi
+
+      - name: Checkout 코드
+        if: steps.check_branch.outputs.exists == 'true'
+        uses: actions/checkout@main
+        with:
+          ref: ${{ matrix.branch }}
+          token: ${{ secrets.WRITABLE_GITHUB_TOKEN }}
+
+      - name: build.gradle 버전 업데이트
+        if: steps.check_branch.outputs.exists == 'true'
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: 'version = "(.+?)"'
+          replace: 'version = "${{ steps.tag.outputs.tag }}"'
+          include: "build.gradle"
+          regex: true
+
+      - name: 변경사항 확인
+        if: steps.check_branch.outputs.exists == 'true'
+        run: |
+          echo "업데이트된 버전 정보 (${{ matrix.branch }}):"
+          grep "version =" build.gradle
+
+      - name: 변경사항 커밋 및 푸시
+        if: steps.check_branch.outputs.exists == 'true'
+        uses: stefanzweifel/git-auto-commit-action@master
+        with:
+          commit_message: "⬆️ 버전 업데이트 (build.gradle) v${{ steps.tag.outputs.tag }}"
+          branch: ${{ matrix.branch }}

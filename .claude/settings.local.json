@@ -104,5 +104,11 @@
       "Bash(npx serverless deploy:*)"
     ],
     "ask": []
-  }
+  },
+  "enabledMcpjsonServers": [
+    "context7",
+    "exa",
+    "filesystem",
+    "github"
+  ]
 }

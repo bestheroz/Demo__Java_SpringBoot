@@ -19,8 +19,10 @@ Spring Boot 기반의 데모 애플리케이션으로 Admin, User, Notice 도메
 # 코드 포맷 검증
 ./gradlew spotlessCheck
 
-# 의존성 버전 체크
-./gradlew dependencyUpdates
+# 의존성·플러그인 버전은 gradle/libs.versions.toml(버전 카탈로그). 버전 없는 항목은 Spring Boot BOM 관리
+./gradlew dependencyUpdates                    # ben-manes 리포트, 사전 릴리스 포함(Demo 정책)
+./gradlew versionCatalogUpdate --interactive   # 올릴 후보를 gradle/libs.versions.updates.toml 에 쓴다
+./gradlew versionCatalogApplyUpdates           # 위 파일에 남긴 항목만 카탈로그에 반영
 
 # JAR 생성 (결과물: build/libs/demo.jar)
 ./gradlew bootJar
@@ -31,14 +33,24 @@ docker run -p 8000:8000 demo:latest
 ```
 
 ## Technology Stack
-- Java 25 (Spring Boot 4.1.0-M2)
-- Gradle 9.4.0
-- Spring Data JPA + MySQL (mysql-connector-j 9.6.0)
-- Spring Security + JWT (com.auth0:java-jwt 4.5.1)
-- Swagger/OpenAPI 3 (springdoc-openapi 3.0.2)
-- Spotless 8.3.0 (Google Java Format)
-- P6Spy (p6spy-spring-boot-starter 2.0.0, SQL 로깅)
-- Sentry 8.35.0 (에러 모니터링)
+- Java 25 (Spring Boot 4.2.0-M1)
+- Gradle 9.8.0-rc-1
+- Spring Data JPA + MySQL (mysql-connector-j 26.7.0, BOM 보다 앞선 명시 버전)
+- Spring Security + JWT (com.auth0:java-jwt 4.6.1)
+- Swagger/OpenAPI 3 (springdoc-openapi 3.1.1)
+- Spotless 8.10.2 (Google Java Format)
+- P6Spy (p6spy-spring-boot-starter 2.0.1, SQL 로깅)
+- Sentry 8.56.0 (에러 모니터링)
+
+## 의존성 관리
+- **Demo 정책**: 신규 버전 선체험과 변화점 발견이 목적이라 사전 릴리스(M·RC·Beta·Alpha 등)를 허용하고 우선한다. `versionCatalogUpdate` 선택기는 `LATEST`, `dependencyUpdates` 는 `rejectPreReleases = false` 다.
+- 좌표는 전부 `gradle/libs.versions.toml` 에 있고 `build.gradle` 은 `libs.xxx` / `alias(libs.plugins.xxx)` 로만 참조한다.
+- 버전 없이 넣은 항목(spring-boot-starter-*, spring-boot-configuration-processor, lombok, aspectjweaver)은 `{ module = "g:a" }` 로 두어 Spring Boot BOM 을 따른다. Boot 플러그인을 사전 릴리스 포함 최신으로 올리면 함께 따라간다.
+- BOM 이 관리하지만 BOM 보다 앞서 체험하려고 버전을 적은 항목(mysql-connector-j)은 명시 버전을 유지한 채 최신으로 올린다. 직접 적은 버전은 BOM 을 이긴다. BOM 관리 좌표에 버전을 새로 적는 것은 그 의도가 있을 때만 한다.
+- `versionCatalogUpdate` 는 버전 없는 항목을 건너뛰고 버전 있는 항목만 사전 릴리스 포함 최신으로 올린다.
+- 올린 버전이 깨지면 먼저 코드를 고친다. 고칠 수 없는 좌표만 동작하는 최신 버전으로 내리고 카탈로그 항목 바로 위 줄에 `# @pin` 을 달며, 사유는 `build.gradle` 주석에 적는다.
+- `versionCatalogUpdate` 가 카탈로그를 다시 쓸 때 항목 옆 주석을 지운다. 남겨야 할 설명은 `build.gradle` 에 두고, 카탈로그에는 `@pin` / `@keep` 애노테이션만 쓴다.
+- `gradle.properties` 가 설정 캐시(`org.gradle.configuration-cache`)·빌드 캐시(`org.gradle.caching`)·병렬 실행(`org.gradle.parallel`)을 켠다. 그래서 CI 워크플로의 gradlew 명령에는 이 플래그를 따로 주지 않는다. `versionCatalogUpdate` 는 설정 캐시와 호환되지 않아 실행할 때마다 캐시 항목이 버려진다(빌드는 성공한다).
 
 ## Architecture
 

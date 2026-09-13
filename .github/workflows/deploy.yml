@@ -59,8 +59,13 @@ jobs:
           dependency-graph: disabled
           add-job-summary: never
 
+      # --parallel / --configuration-cache / --build-cache 는 gradle.properties 로 옮겼다.
+      # 여기에만 두면 로컬·IDE 빌드는 같은 이점을 못 받아서, 한 곳에서 관리한다.
+      # --no-daemon 은 남긴다(러너는 일회용이라 데몬을 남겨 둘 이유가 없다).
+      # -Dspring.profiles.active 는 Gradle JVM 에만 걸리고 jar 에는 아무 영향이 없어서 뺐다.
+      # PROFILE 은 위 set env 단계에서 REF_BRANCH 로 이어져 Repository Dispatch 페이로드에 계속 쓰인다.
       - name: Build with Gradle
-        run: ./gradlew assemble --no-daemon --parallel --configuration-cache --build-cache -Dspring.profiles.active=${{ env.PROFILE }} -x test
+        run: ./gradlew assemble --no-daemon -x test
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master

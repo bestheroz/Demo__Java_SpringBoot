@@ -21,3 +21,7 @@ out
 src/main/generated
 
 .omc
+
+# versionCatalogUpdate --interactive 가 만드는 임시 파일.
+# versionCatalogApplyUpdates 가 소비하고 지우므로 커밋 대상이 아니다.
+/gradle/libs.versions.updates.toml

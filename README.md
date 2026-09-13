@@ -27,3 +27,9 @@
     - [x] User JWT
 - [x] Notice
     - [x] Notice CRUD
+
+# Dependency Policy
+- 신규 버전 선체험과 변화점 발견이 목적이라 사전 릴리스(M·RC·Beta·Alpha 등)를 허용하고 우선합니다.
+- 의존성·플러그인 좌표는 `gradle/libs.versions.toml` 에 있습니다. 버전 없는 항목은 Spring Boot BOM 을 따르고, 버전을 적은 항목은 BOM 보다 앞서 최신을 씁니다.
+- `./gradlew versionCatalogUpdate` 가 버전 있는 항목을 사전 릴리스 포함 최신으로 올립니다.
+- 올린 버전이 깨지면 먼저 코드를 고칩니다. 고칠 수 없는 항목만 동작하는 최신 버전으로 내리고 `# @pin` 을 붙입니다.

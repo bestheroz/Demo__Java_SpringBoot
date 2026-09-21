@@ -16,7 +16,7 @@
 # versionCatalogUpdate 가 이 파일을 다시 쓸 때 항목 옆 주석은 사라질 수 있다. 남겨야 하는 설명은
 # build.gradle 에 두고, 여기서는 `@pin`(버전 고정) / `@keep`(미사용 항목 유지) 애노테이션만 쓴다.
 [versions]
-sentry = "8.56.0"
+sentry = "8.57.0"
 
 [libraries]
 aspectjweaver = { module = "org.aspectj:aspectjweaver" }
@@ -34,7 +34,7 @@ spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-st
 springdoc-openapi-starter-webmvc-ui = "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1"
 
 [plugins]
-ben-manes-versions = "io.github.ben-manes.versions:0.62.0"
+ben-manes-versions = "io.github.ben-manes.versions:0.64.0"
 spotless = "com.diffplug.spotless:8.10.2"
 spring-boot = "org.springframework.boot:4.2.0-M1"
 spring-dependency-management = "io.spring.dependency-management:1.1.7"
